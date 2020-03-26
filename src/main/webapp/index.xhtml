@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>Online Payment Service</title>
+    </h:head>
+    <h:body>
+        <h1>Welcome to the Online Payment Service!</h1>
+        <br/>
+        <h2>Please, log in:</h2>
+        <form action="j_security_check" name="loginForm">
+            Username: <input type="text" name="j_username" size="20"/>
+            Password: <input type="password" name="j_password" size="20"/>
+            <br/>
+            <button value="Login" type="submit">Login</button>
+        </form>
+        <br/>
+        <h:link value="Don't have an account? Register here." outcome="registerUser"/>
+    </h:body>
+</html>
+
