@@ -6,6 +6,8 @@
 package com.md459.onlinepaymentservice.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -22,15 +24,15 @@ public class SystemUserGroup implements Serializable {
     private Long id;
     
     @NotNull
-    private String username;
-    
-    @NotNull
     private String groupname;
+    
+    @OneToMany(mappedBy = "usergroup",
+            cascade=CascadeType.PERSIST)
+    private List<SystemUser> users;
     
     public SystemUserGroup() {}
     
-    public SystemUserGroup(String username, String groupname) {
-        this.username = username;
+    public SystemUserGroup(String groupname) {
         this.groupname = groupname;
     }
 
@@ -38,8 +40,8 @@ public class SystemUserGroup implements Serializable {
     public int hashCode() {
         int hash = 3;
         hash = 37 * hash + Objects.hashCode(this.id);
-        hash = 37 * hash + Objects.hashCode(this.username);
         hash = 37 * hash + Objects.hashCode(this.groupname);
+        hash = 37 * hash + Objects.hashCode(this.users);
         return hash;
     }
 
@@ -55,7 +57,7 @@ public class SystemUserGroup implements Serializable {
             return false;
         }
         final SystemUserGroup other = (SystemUserGroup) obj;
-        if (!Objects.equals(this.username, other.username)) {
+        if (!Objects.equals(this.users, other.users)) {
             return false;
         }
         if (!Objects.equals(this.groupname, other.groupname)) {
@@ -75,19 +77,27 @@ public class SystemUserGroup implements Serializable {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getGroupname() {
         return groupname;
     }
 
     public void setGroupname(String groupname) {
         this.groupname = groupname;
+    }
+
+    public List<SystemUser> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<SystemUser> users) {
+        this.users = users;
+    }
+    
+    public void addUser(SystemUser user) {
+        if(users == null) {
+            users = new ArrayList<>();
+        }
+        user.setUsergroup(this);
+        users.add(user);
     }
 }

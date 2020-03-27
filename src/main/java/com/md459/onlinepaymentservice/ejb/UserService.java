@@ -12,7 +12,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.Stateless;
+import javax.ejb.*;
 import javax.persistence.*;
 
 /**
@@ -25,16 +25,23 @@ public class UserService {
     @PersistenceContext
     private EntityManager em;
     
-    public UserService() {}
+    @EJB
+    UserGroupService ugs;
     
+    public UserService() {}
+        
     public void registerUser(String username, String password, String name, String surname) {
-        em.persist(new SystemUser(username, getDigest(password), name, surname));
-        em.persist(new SystemUserGroup(username, "users"));
+        SystemUser user = new SystemUser(username, getDigest(password), name, surname);
+        SystemUserGroup users = ugs.getUserGroup();
+        users.addUser(user);
+        em.persist(user);        
     }
     
     public void registerAdmin(String username, String password, String name, String surname) {
-        em.persist(new SystemUser(username, getDigest(password), name, surname));
-        em.persist(new SystemUserGroup(username, "admins"));
+        SystemUser user = new SystemUser(username, getDigest(password), name, surname);
+        SystemUserGroup admins = ugs.getAdminGroup();
+        admins.addUser(user);
+        em.persist(user);
     }
     
     private String getDigest(String password) {

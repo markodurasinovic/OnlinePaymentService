@@ -29,6 +29,9 @@ public class SystemUser implements Serializable {
     
     private String name;
     private String surname;
+    
+    @ManyToOne
+    private SystemUserGroup usergroup;
 
     public SystemUser() {}
     
@@ -118,5 +121,13 @@ public class SystemUser implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public SystemUserGroup getUsergroup() {
+        return usergroup;
+    }
+
+    public void setUsergroup(SystemUserGroup usergroup) {
+        this.usergroup = usergroup;
     }
 }
