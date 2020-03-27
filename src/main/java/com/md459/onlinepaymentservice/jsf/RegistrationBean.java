@@ -1,6 +1,8 @@
 package com.md459.onlinepaymentservice.jsf;
 
 
+import com.md459.onlinepaymentservice.ejb.UserService;
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
@@ -17,6 +19,9 @@ import javax.inject.Named;
 @Named
 @RequestScoped
 public class RegistrationBean {
+    
+    @EJB
+    UserService usrSrv;
 
     private String username;
     private String password;
@@ -28,6 +33,12 @@ public class RegistrationBean {
     }
     
     public String registerUser() {
+        usrSrv.registerUser(username, password, name, surname);
+        return "index";
+    }
+    
+    public String registerAdmin() {
+        usrSrv.registerAdmin(username, password, name, surname);
         return "index";
     }
 

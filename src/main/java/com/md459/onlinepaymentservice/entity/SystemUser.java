@@ -5,27 +5,34 @@
  */
 package com.md459.onlinepaymentservice.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  *
  * @author marko
  */
 @Entity
-public class User {
+public class SystemUser implements Serializable {
 
     @Id
+    @GeneratedValue
     private Long id;
+    
+    @NotNull
     private String username;
+    
+    @NotNull
     private String password;
+    
     private String name;
     private String surname;
 
-    public User() {}
+    public SystemUser() {}
     
-    public User(String username, String password, String name, String surname) {
+    public SystemUser(String username, String password, String name, String surname) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -54,7 +61,7 @@ public class User {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final User other = (User) obj;
+        final SystemUser other = (SystemUser) obj;
         if (!Objects.equals(this.username, other.username)) {
             return false;
         }

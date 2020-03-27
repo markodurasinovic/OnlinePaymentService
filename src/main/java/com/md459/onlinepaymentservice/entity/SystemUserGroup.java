@@ -5,25 +5,31 @@
  */
 package com.md459.onlinepaymentservice.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  *
  * @author marko
  */
 @Entity
-public class UserGroup {
+public class SystemUserGroup implements Serializable {
     
     @Id
+    @GeneratedValue
     private Long id;
+    
+    @NotNull
     private String username;
+    
+    @NotNull
     private String groupname;
     
-    public UserGroup() {}
+    public SystemUserGroup() {}
     
-    public UserGroup(String username, String groupname) {
+    public SystemUserGroup(String username, String groupname) {
         this.username = username;
         this.groupname = groupname;
     }
@@ -48,7 +54,7 @@ public class UserGroup {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final UserGroup other = (UserGroup) obj;
+        final SystemUserGroup other = (SystemUserGroup) obj;
         if (!Objects.equals(this.username, other.username)) {
             return false;
         }

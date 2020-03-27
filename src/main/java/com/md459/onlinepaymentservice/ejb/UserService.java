@@ -5,8 +5,8 @@
  */
 package com.md459.onlinepaymentservice.ejb;
 
-import com.md459.onlinepaymentservice.entity.User;
-import com.md459.onlinepaymentservice.entity.UserGroup;
+import com.md459.onlinepaymentservice.entity.SystemUser;
+import com.md459.onlinepaymentservice.entity.SystemUserGroup;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,18 +23,18 @@ import javax.persistence.*;
 public class UserService {
     
     @PersistenceContext
-    EntityManager em;
+    private EntityManager em;
     
     public UserService() {}
     
     public void registerUser(String username, String password, String name, String surname) {
-        em.persist(new User(username, getDigest(password), name, surname));
-        em.persist(new UserGroup(username, "users"));
+        em.persist(new SystemUser(username, getDigest(password), name, surname));
+        em.persist(new SystemUserGroup(username, "users"));
     }
     
     public void registerAdmin(String username, String password, String name, String surname) {
-        em.persist(new User(username, getDigest(password), name, surname));
-        em.persist(new UserGroup(username, "admins"));
+        em.persist(new SystemUser(username, getDigest(password), name, surname));
+        em.persist(new SystemUserGroup(username, "admins"));
     }
     
     private String getDigest(String password) {
