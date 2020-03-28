@@ -26,13 +26,19 @@ public class SystemUserGroup implements Serializable {
     @NotNull
     private String groupname;
     
-    @OneToMany(mappedBy = "usergroup",
-            cascade=CascadeType.PERSIST)
+    @NotNull
+    private String username;
+    
+    @OneToMany(cascade=CascadeType.PERSIST)
+    @JoinTable(name="systemusergroup_systemuser",
+            joinColumns={@JoinColumn(name="systemuser_fk", referencedColumnName="username")},
+            inverseJoinColumns=@JoinColumn(name="systemusergroup_fk", referencedColumnName="username"))
     private List<SystemUser> users;
     
     public SystemUserGroup() {}
     
-    public SystemUserGroup(String groupname) {
+    public SystemUserGroup(String username, String groupname) {
+        this.username = username;
         this.groupname = groupname;
     }
 
@@ -93,11 +99,11 @@ public class SystemUserGroup implements Serializable {
         this.users = users;
     }
     
-    public void addUser(SystemUser user) {
-        if(users == null) {
-            users = new ArrayList<>();
-        }
-        user.setUsergroup(this);
-        users.add(user);
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

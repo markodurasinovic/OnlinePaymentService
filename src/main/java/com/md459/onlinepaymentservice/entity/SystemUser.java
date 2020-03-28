@@ -25,7 +25,7 @@ public class SystemUser implements Serializable {
     private String username;
     
     @NotNull
-    private String password;
+    private String userpassword;
     
     private String name;
     private String surname;
@@ -35,9 +35,9 @@ public class SystemUser implements Serializable {
 
     public SystemUser() {}
     
-    public SystemUser(String username, String password, String name, String surname) {
+    public SystemUser(String username, String userpassword, String name, String surname) {
         this.username = username;
-        this.password = password;
+        this.userpassword = userpassword;
         this.name = name;
         this.surname = surname;
     }
@@ -47,7 +47,7 @@ public class SystemUser implements Serializable {
         int hash = 3;
         hash = 89 * hash + Objects.hashCode(this.id);
         hash = 89 * hash + Objects.hashCode(this.username);
-        hash = 89 * hash + Objects.hashCode(this.password);
+        hash = 89 * hash + Objects.hashCode(this.userpassword);
         hash = 89 * hash + Objects.hashCode(this.name);
         hash = 89 * hash + Objects.hashCode(this.surname);
         return hash;
@@ -68,7 +68,7 @@ public class SystemUser implements Serializable {
         if (!Objects.equals(this.username, other.username)) {
             return false;
         }
-        if (!Objects.equals(this.password, other.password)) {
+        if (!Objects.equals(this.userpassword, other.userpassword)) {
             return false;
         }
         if (!Objects.equals(this.name, other.name)) {
@@ -92,11 +92,11 @@ public class SystemUser implements Serializable {
     }
 
     public String getPassword() {
-        return password;
+        return userpassword;
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.userpassword = password;
     }
 
     public String getName() {

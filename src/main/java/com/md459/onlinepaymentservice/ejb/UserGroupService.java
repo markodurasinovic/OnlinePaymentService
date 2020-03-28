@@ -5,12 +5,10 @@
  */
 package com.md459.onlinepaymentservice.ejb;
 
-import com.md459.onlinepaymentservice.entity.SystemUser;
-import com.md459.onlinepaymentservice.entity.SystemUserGroup;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.persistence.*;
 
 /**
  *
@@ -20,32 +18,13 @@ import javax.persistence.*;
 @Singleton
 public class UserGroupService {
     
-    @PersistenceContext
-    private EntityManager em;
-    
-    private SystemUserGroup userGroup;
-    private SystemUserGroup adminGroup;
+    @EJB
+    UserService usrSrv;
     
     public UserGroupService() {}
     
     @PostConstruct
     public void init() {
-        userGroup = new SystemUserGroup("users");
-        adminGroup = new SystemUserGroup("admins");
-        
-        SystemUser admin = new SystemUser("admin1", "admin1", null, null);
-        adminGroup.addUser(admin);
-        
-        em.persist(userGroup);
-        em.persist(adminGroup); 
-    }
-
-    public SystemUserGroup getUserGroup() {
-        return userGroup;
-    }
-
-    public SystemUserGroup getAdminGroup() {
-        return adminGroup;
-    }
-    
+        usrSrv.registerAdmin("admin1", "admin1", null, null);
+    }    
 }

@@ -23,25 +23,24 @@ import javax.persistence.*;
 public class UserService {
     
     @PersistenceContext
-    private EntityManager em;
-    
-    @EJB
-    UserGroupService ugs;
+    private EntityManager em;    
     
     public UserService() {}
         
     public void registerUser(String username, String password, String name, String surname) {
         SystemUser user = new SystemUser(username, getDigest(password), name, surname);
-        SystemUserGroup users = ugs.getUserGroup();
-        users.addUser(user);
+        SystemUserGroup userGroup = new SystemUserGroup(username, "USER");
+        
         em.persist(user);        
+        em.persist(userGroup);
     }
     
     public void registerAdmin(String username, String password, String name, String surname) {
         SystemUser user = new SystemUser(username, getDigest(password), name, surname);
-        SystemUserGroup admins = ugs.getAdminGroup();
-        admins.addUser(user);
+        SystemUserGroup adminGroup = new SystemUserGroup(username, "ADMIN");
+        
         em.persist(user);
+        em.persist(adminGroup);
     }
     
     private String getDigest(String password) {

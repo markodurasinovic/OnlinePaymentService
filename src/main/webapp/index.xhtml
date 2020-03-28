@@ -8,14 +8,8 @@
     <h:body>
         <h1>Welcome to the Online Payment Service!</h1>
         <br/>
-        <h2>Please, log in:</h2>
-        <form action="j_security_check" name="loginForm">
-            Username: <input type="text" name="j_username" size="20"/>
-            Password: <input type="password" name="j_password" size="20"/>
-            <br/>
-            <button value="Login" type="submit">Login</button>
-        </form>
-        <br/>
+        <h:link value="Go to a user page" outcome="users/user"/>
+        <h:link value="Go to an admin page" outcome="admins/admin"/>
         <h:link value="Don't have an account? Register here." outcome="registerUser"/>
     </h:body>
 </html>
