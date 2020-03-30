@@ -38,6 +38,8 @@ public class RegistrationBean {
     }
     
     public String registerAdmin() {
+        name = name.equals("") ? null : name;
+        surname = surname.equals("") ? null : surname;
         usrSrv.registerAdmin(username, password, name, surname);
         return "index";
     }

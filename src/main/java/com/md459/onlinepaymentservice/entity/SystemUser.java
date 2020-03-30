@@ -31,9 +31,20 @@ public class SystemUser implements Serializable {
     private String surname;
     
     @ManyToOne
+    @JoinTable(name="systemusergroup_systemuser",
+            joinColumns={@JoinColumn(name = "username", referencedColumnName = "username")},
+            inverseJoinColumns={@JoinColumn(name = "groupname", referencedColumnName = "groupname")}
+    )
     private SystemUserGroup usergroup;
 
     public SystemUser() {}
+    
+    public SystemUser(String username, String userpassword) {
+        this.username = username;
+        this.userpassword = userpassword;
+        this.name = null;
+        this.surname = null;
+    }
     
     public SystemUser(String username, String userpassword, String name, String surname) {
         this.username = username;
