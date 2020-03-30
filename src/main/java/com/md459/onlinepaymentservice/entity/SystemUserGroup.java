@@ -24,9 +24,10 @@ public class SystemUserGroup implements Serializable {
     private Long id;
     
     @NotNull
+    @Column(unique = true)
     private String groupname;
     
-    @OneToMany(mappedBy = "usergroup", cascade=CascadeType.PERSIST)
+    @OneToMany(mappedBy = "usergroup")
     @JoinTable(name = "systemusergroup_systemuser",
             joinColumns={@JoinColumn(name = "groupname", referencedColumnName = "groupname")},
             inverseJoinColumns={@JoinColumn(name = "username", referencedColumnName = "username")}
