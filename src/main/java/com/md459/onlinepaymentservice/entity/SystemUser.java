@@ -22,7 +22,6 @@ public class SystemUser implements Serializable {
     private Long id;
     
     @NotNull
-    @Column(unique = true)
     private String username;
     
     @NotNull
@@ -32,10 +31,6 @@ public class SystemUser implements Serializable {
     private String surname;
     
     @ManyToOne
-    @JoinTable(name="systemusergroup_systemuser",
-            joinColumns={@JoinColumn(name = "username", referencedColumnName = "username")},
-            inverseJoinColumns={@JoinColumn(name = "groupname", referencedColumnName = "groupname")}
-    )
     private SystemUserGroup usergroup;
 
     public SystemUser() {}
