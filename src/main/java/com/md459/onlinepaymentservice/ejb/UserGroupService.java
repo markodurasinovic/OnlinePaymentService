@@ -19,12 +19,12 @@ import javax.ejb.Startup;
 public class UserGroupService {
     
     @EJB
-    UserService us;
+    UserService usrSrv;
     
     public UserGroupService() {}
     
     @PostConstruct
     public void init() {
-        us.registerAdmin("admin1", "admin1", null, null);
+        usrSrv.registerAdmin("admin1", "admin1");
     }
 }

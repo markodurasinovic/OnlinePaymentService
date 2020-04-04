@@ -6,6 +6,8 @@
 package com.md459.onlinepaymentservice.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -22,6 +24,7 @@ public class SystemUser implements Serializable {
     private Long id;
     
     @NotNull
+    @Column(unique = true)
     private String username;
     
     @NotNull
@@ -29,24 +32,76 @@ public class SystemUser implements Serializable {
     
     private String name;
     private String surname;
+    private String currency;
+    private double balance;
     
     @ManyToOne
     private SystemUserGroup usergroup;
+    
+    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.PERSIST)
+    private List<PaymentTransaction> fromTransactions;
+    
+    @OneToMany(mappedBy = "toUser", cascade = CascadeType.PERSIST)
+    private List<PaymentTransaction> toTransactions;
 
     public SystemUser() {}
     
+    // Admin registration
     public SystemUser(String username, String userpassword) {
         this.username = username;
         this.userpassword = userpassword;
         this.name = null;
         this.surname = null;
+        this.currency = null;
+        this.balance = 0;
     }
     
-    public SystemUser(String username, String userpassword, String name, String surname) {
+    public SystemUser(String username, String userpassword, String name, String surname, String currency) {
         this.username = username;
         this.userpassword = userpassword;
         this.name = name;
         this.surname = surname;
+        this.currency = currency;
+        this.balance = initBalance();
+    }
+
+    public String getUserpassword() {
+        return userpassword;
+    }
+
+    public void setUserpassword(String userpassword) {
+        this.userpassword = userpassword;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+    
+    private double initBalance() {
+        // this should use REST instead
+        double defVal = 1000; // GBP
+        double USDRate = 1.23;
+        double EURRate = 1.14;
+        switch(this.currency) {
+            case "USD":
+                return defVal * USDRate;
+            case "EUR":
+                return defVal * EURRate;
+            default:
+                return defVal;
+        }
     }
 
     @Override
@@ -98,14 +153,6 @@ public class SystemUser implements Serializable {
         this.username = username;
     }
 
-    public String getPassword() {
-        return userpassword;
-    }
-
-    public void setPassword(String password) {
-        this.userpassword = password;
-    }
-
     public String getName() {
         return name;
     }
@@ -136,5 +183,33 @@ public class SystemUser implements Serializable {
 
     public void setUsergroup(SystemUserGroup usergroup) {
         this.usergroup = usergroup;
+    }
+
+    public List<PaymentTransaction> getFromTransactions() {
+        return fromTransactions;
+    }
+
+    public void setFromTransactions(List<PaymentTransaction> fromTransactions) {
+        this.fromTransactions = fromTransactions;
+    }
+    
+    public void addFromTransaction(PaymentTransaction transaction) {
+        if(fromTransactions == null) fromTransactions = new ArrayList<>();
+        
+        fromTransactions.add(transaction);
+    }
+
+    public List<PaymentTransaction> getToTransactions() {
+        return toTransactions;
+    }
+
+    public void setToTransactions(List<PaymentTransaction> toTransactions) {
+        this.toTransactions = toTransactions;
+    }
+    
+    public void addToTransaction(PaymentTransaction transaction) {
+        if(toTransactions == null) toTransactions = new ArrayList<>();
+        
+        toTransactions.add(transaction);
     }
 }

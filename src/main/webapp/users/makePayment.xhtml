@@ -3,15 +3,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
     <h:head>
-        <title>User Landing Page</title>
+        <title>Make Payment</title>
     </h:head>
     <h:body>
-        Hello #{userBean.user.name}
+        Making a payment to #{userBean.toUser.name} #{userBean.toUser.surname}
         <br/>
-        Your balance is: #{userBean.user.currency}#{userBean.user.balance}
+        
         <h:form>
-            <h:inputText id="searchUsers" value="#{searchBean.searchTerm}"/>
-            <h:commandButton value="Search for User" action="userSearchResult"/>
+            <h:inputText id="amount" value="#{paymentBean.amount}"/>
+            <br/>
+            <h:commandButton value="Confirm" action="#{paymentBean.makePayment(userBean.toUser.username)}"/>
         </h:form>
     </h:body>
 </html>

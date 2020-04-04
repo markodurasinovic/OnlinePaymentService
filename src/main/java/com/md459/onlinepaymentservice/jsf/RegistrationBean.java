@@ -27,20 +27,19 @@ public class RegistrationBean {
     private String password;
     private String name;
     private String surname;
+    private String currency;
     
     public RegistrationBean() {
         
     }
     
     public String registerUser() {
-        usrSrv.registerUser(username, password, name, surname);
+        usrSrv.registerUser(username, password, name, surname, currency);
         return "index";
     }
     
     public String registerAdmin() {
-        name = name.equals("") ? null : name;
-        surname = surname.equals("") ? null : surname;
-        usrSrv.registerAdmin(username, password, name, surname);
+        usrSrv.registerAdmin(username, password);
         return "index";
     }
 
@@ -76,4 +75,11 @@ public class RegistrationBean {
         this.surname = surname;
     }
     
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
 }
