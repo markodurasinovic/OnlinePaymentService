@@ -31,7 +31,7 @@ public class UserBean implements Serializable {
     public UserBean() {}
 
     public SystemUser getUser() {
-        if(user == null) user = usrSrv.getCurrentUser();
+        user = usrSrv.getCurrentUser();
         
         return user;
     }
