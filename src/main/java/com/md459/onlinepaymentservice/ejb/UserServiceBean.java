@@ -34,6 +34,55 @@ public class UserServiceBean implements UserService {
     public UserServiceBean() {}
     
     @Override
+    public List<PaymentTransaction> getTransactionHistory(SystemUser user) {
+        TypedQuery<PaymentTransaction> query = em.createQuery(
+            "SELECT t FROM PaymentTransaction t WHERE t.fromUser = :user OR t.toUser = :user",
+                PaymentTransaction.class);
+        
+        return query
+                .setParameter("user", user)
+                .getResultList();
+    }
+    
+    @Override
+    public void acceptRequest(long reqId) {
+        PaymentTransaction transaction = getTransaction(reqId);
+        
+        if(transaction.getStatus().equals("PENDING")) {
+            SystemUser fromUser = transaction.getFromUser();
+            SystemUser toUser = transaction.getToUser();
+
+            double transferAmount = convert(transaction.getAmount(), toUser.getCurrency(), fromUser.getCurrency());
+            if(fromUser.getBalance() >= transferAmount) {
+                fromUser.setBalance(fromUser.getBalance() - transferAmount);
+                toUser.setBalance(toUser.getBalance() + transaction.getAmount());
+
+                transaction.setStatus("COMPLETE");
+            } else {
+                // throw exception here
+            }
+        }
+    }
+    
+    @Override
+    public void rejectRequest(long reqId) {
+        PaymentTransaction transaction = getTransaction(reqId);
+        
+        if(transaction.getStatus().equals("PENDING")) {
+            transaction.setStatus("VOID");
+        }
+    }
+    
+    private PaymentTransaction getTransaction(long id) {
+        TypedQuery<PaymentTransaction> query = em.createQuery(
+            "SELECT t FROM PaymentTransaction t WHERE t.id = :id", PaymentTransaction.class);
+        
+        return query
+                .setParameter("id", id)
+                .getSingleResult();
+    }
+    
+    @Override
     public void requestPayment(String username, double amount, String description) {
         SystemUser toUser = getCurrentUser();
         SystemUser fromUser = getUser(username);
@@ -69,14 +118,18 @@ public class UserServiceBean implements UserService {
         SystemUser toUser = getUser(username);
         
         double transferAmount = convert(amount, fromUser.getCurrency(), toUser.getCurrency());
-        PaymentTransaction transaction = new PaymentTransaction(fromUser, toUser, transferAmount, description);
-        
-        fromUser.setBalance(fromUser.getBalance() - amount);
-        toUser.setBalance(toUser.getBalance() + transferAmount);
-        
-        transaction.setStatus("COMPLETE");
-        
-        em.persist(transaction);
+        if(fromUser.getBalance() >= transferAmount) {
+            PaymentTransaction transaction = new PaymentTransaction(fromUser, toUser, transferAmount, description);
+
+            fromUser.setBalance(fromUser.getBalance() - amount);
+            toUser.setBalance(toUser.getBalance() + transferAmount);
+
+            transaction.setStatus("COMPLETE");
+
+            em.persist(transaction);
+        } else {
+            // throw exception here
+        }
     }
     
     private double convert(double amount, String currencyFrom, String currencyTo) {

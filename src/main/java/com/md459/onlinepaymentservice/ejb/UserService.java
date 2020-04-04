@@ -17,6 +17,9 @@ import javax.ejb.Local;
 @Local
 public interface UserService {
     
+    public List<PaymentTransaction> getTransactionHistory(SystemUser user);
+    public void acceptRequest(long reqId);
+    public void rejectRequest(long reqId);
     public void requestPayment(String username, double amount, String description);
     public int getNumRequests(SystemUser user);
     public List<PaymentTransaction> getPaymentRequests(SystemUser user);

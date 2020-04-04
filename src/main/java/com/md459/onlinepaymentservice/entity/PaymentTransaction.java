@@ -6,10 +6,13 @@
 package com.md459.onlinepaymentservice.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -29,8 +32,12 @@ public class PaymentTransaction implements Serializable {
     private SystemUser toUser;
     
     private double amount;
+    private String currency;
     private String status;
     private String description;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationTime;
     
     public PaymentTransaction() {}
     
@@ -90,4 +97,19 @@ public class PaymentTransaction implements Serializable {
         this.amount = amount;
     }
     
+    public Date getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(Date creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
 }

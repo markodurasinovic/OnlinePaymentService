@@ -32,6 +32,18 @@ public class UserBean implements Serializable {
     
     public UserBean() {}
     
+    public List<PaymentTransaction> getTransactionHistory() {
+        return usrSrv.getTransactionHistory(user);
+    }
+    
+    public void acceptRequest(long reqId) {
+        usrSrv.acceptRequest(reqId);
+    }
+    
+    public void rejectRequest(long reqId) {
+        usrSrv.rejectRequest(reqId);
+    }
+    
     public List<PaymentTransaction> getPaymentRequests() {
         return usrSrv.getPaymentRequests(user);
     }

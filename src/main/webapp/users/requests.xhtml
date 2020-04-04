@@ -28,11 +28,11 @@
             </h:column>
             
             <h:column>
-                <h:button value="Accept"/>
-            </h:column>
-            
-            <h:column>
-                <h:button value="Reject"/>
+                <h:form>
+                    <h:commandButton value="Accept" rendered="#{req.status eq 'PENDING'}" action="#{userBean.acceptRequest(req.id)}"/>
+                    <br/>
+                    <h:commandButton value="Reject" rendered="#{req.status eq 'PENDING'}" action="#{userBean.rejectRequest(req.id)}"/>
+                </h:form>
             </h:column>
             
         </h:dataTable>
