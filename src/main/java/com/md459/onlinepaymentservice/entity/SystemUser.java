@@ -59,8 +59,8 @@ public class SystemUser implements Serializable {
     public SystemUser(String username, String userpassword, String name, String surname, String currency) {
         this.username = username;
         this.userpassword = userpassword;
-        this.name = name;
-        this.surname = surname;
+        this.name = capitalise(name);
+        this.surname = capitalise(surname);
         this.currency = currency;
         this.balance = initBalance();
     }
@@ -158,7 +158,7 @@ public class SystemUser implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = capitalise(name);
     }
 
     public String getSurname() {
@@ -166,7 +166,11 @@ public class SystemUser implements Serializable {
     }
 
     public void setSurname(String surname) {
-        this.surname = surname;
+        this.surname = capitalise(surname);
+    }
+    
+    private String capitalise(String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
     public Long getId() {

@@ -6,11 +6,13 @@
         <title>Make Payment</title>
     </h:head>
     <h:body>
-        Making a payment to #{userBean.toUser.name} #{userBean.toUser.surname}
+        Make a payment to #{userBean.toUser.name} #{userBean.toUser.surname}
         <br/>
         
         <h:form>
-            <h:inputText id="amount" value="#{paymentBean.amount}"/>
+            Amount: <h:inputText id="amount" value="#{paymentBean.amount}"/>
+            <br/>
+            Description: <h:inputTextarea id="description" value="#{paymentBean.description}"/>
             <br/>
             <h:commandButton value="Confirm" action="#{paymentBean.makePayment(userBean.toUser.username)}"/>
         </h:form>

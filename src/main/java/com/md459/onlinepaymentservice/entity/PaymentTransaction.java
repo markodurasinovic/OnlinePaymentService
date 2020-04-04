@@ -23,19 +23,39 @@ public class PaymentTransaction implements Serializable {
     private Long id;
     
     @ManyToOne
-    SystemUser fromUser;
+    private SystemUser fromUser;
     
     @ManyToOne
-    SystemUser toUser;
+    private SystemUser toUser;
     
-    double amount;
+    private double amount;
+    private String status;
+    private String description;
     
     public PaymentTransaction() {}
     
-    public PaymentTransaction(SystemUser fromUser, SystemUser toUser, double amount) {
+    public PaymentTransaction(SystemUser fromUser, SystemUser toUser, double amount, String description) {
         this.fromUser = fromUser;
         this.toUser = toUser;
         this.amount = amount;
+        this.description = description;
+        this.status = "PENDING";
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Long getId() {

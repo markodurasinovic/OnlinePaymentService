@@ -6,8 +6,10 @@
 package com.md459.onlinepaymentservice.jsf;
 
 import com.md459.onlinepaymentservice.ejb.UserService;
+import com.md459.onlinepaymentservice.entity.PaymentTransaction;
 import com.md459.onlinepaymentservice.entity.SystemUser;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -29,6 +31,14 @@ public class UserBean implements Serializable {
     private SystemUser toUser;
     
     public UserBean() {}
+    
+    public List<PaymentTransaction> getPaymentRequests() {
+        return usrSrv.getPaymentRequests(user);
+    }
+    
+    public int getNumRequests() {
+        return usrSrv.getNumRequests(user);
+    }
 
     public SystemUser getUser() {
         user = usrSrv.getCurrentUser();

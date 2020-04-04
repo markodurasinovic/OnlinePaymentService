@@ -34,17 +34,47 @@ public class UserServiceBean implements UserService {
     public UserServiceBean() {}
     
     @Override
-    public void makePayment(String username, double amount) {
+    public void requestPayment(String username, double amount, String description) {
+        SystemUser toUser = getCurrentUser();
+        SystemUser fromUser = getUser(username);
+        
+        double transferAmount = convert(amount, fromUser.getCurrency(), toUser.getCurrency());
+        PaymentTransaction transaction = new PaymentTransaction(fromUser, toUser, transferAmount, description);
+        
+        transaction.setStatus("PENDING");
+        
+        em.persist(transaction);
+    }
+    
+    @Override
+    public int getNumRequests(SystemUser user) {
+        return getPaymentRequests(user).size();
+    }
+    
+    @Override
+    public List<PaymentTransaction> getPaymentRequests(SystemUser user) {
+        TypedQuery<PaymentTransaction> query = em.createQuery(
+            "SELECT t FROM PaymentTransaction t WHERE t.fromUser = :user AND t.status = :status",
+                PaymentTransaction.class);
+        
+        return query
+                .setParameter("user", user)
+                .setParameter("status", "PENDING")
+                .getResultList();
+    }
+    
+    @Override
+    public void makePayment(String username, double amount, String description) {
         SystemUser fromUser = getCurrentUser();
         SystemUser toUser = getUser(username);
         
-        System.out.println("Transfering from " + fromUser + " to " + toUser);
-        
         double transferAmount = convert(amount, fromUser.getCurrency(), toUser.getCurrency());
-        PaymentTransaction transaction = new PaymentTransaction(fromUser, toUser, transferAmount);
+        PaymentTransaction transaction = new PaymentTransaction(fromUser, toUser, transferAmount, description);
         
         fromUser.setBalance(fromUser.getBalance() - amount);
         toUser.setBalance(toUser.getBalance() + transferAmount);
+        
+        transaction.setStatus("COMPLETE");
         
         em.persist(transaction);
     }

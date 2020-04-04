@@ -7,12 +7,8 @@ package com.md459.onlinepaymentservice.jsf;
 
 import com.md459.onlinepaymentservice.ejb.UserService;
 import com.md459.onlinepaymentservice.entity.SystemUser;
-import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 /**
@@ -28,11 +24,18 @@ public class PaymentBean {
     
     private SystemUser toUser;
     private double amount;
+    private String description;
     
     public PaymentBean() {}
     
+    public String requestPayment(String username) {
+        usrSrv.requestPayment(username, amount, description);
+        // add a payment confirmation page
+        return "user";
+    }
+    
     public String makePayment(String username) {
-        usrSrv.makePayment(username, amount);
+        usrSrv.makePayment(username, amount, description);
         // add a payment confirmation page
         return "user";
     }
@@ -51,6 +54,14 @@ public class PaymentBean {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
     
     

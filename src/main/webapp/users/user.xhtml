@@ -6,13 +6,22 @@
         <title>User Landing Page</title>
     </h:head>
     <h:body>
-        Hello #{userBean.user.name}
+        Hello #{userBean.user.name} #{userBean.user.surname}!
         <br/>
-        Your balance is: #{userBean.user.currency}#{userBean.user.balance}
+        
+        Current balance: #{userBean.user.currency}#{userBean.user.balance}
+        <br/>
+        
         <h:form>
             <h:inputText id="searchUsers" value="#{searchBean.searchTerm}"/>
             <h:commandButton value="Search for User" action="userSearchResult"/>
         </h:form>
+        <br/>
+        
+        <h:link value="View transactions" outcome="transactions"/>
+        <br/>
+        
+        <h:link value="You have #{userBean.numRequests} payment requests" outcome="requests"/>
     </h:body>
 </html>
 
