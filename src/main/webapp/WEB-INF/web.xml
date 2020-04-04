@@ -53,7 +53,7 @@
     
     <login-config>
         <auth-method>FORM</auth-method>
-        <realm-name>OnlinePaymentServiceJDBCRealm</realm-name>
+        <realm-name>WebappsRealm</realm-name>
         <form-login-config>
             <form-login-page>/faces/login.xhtml</form-login-page>
             <form-error-page>/faces/error.xhtml</form-error-page>
