@@ -12,7 +12,7 @@
             <br/>
 
             <h:outputLabel for="username" value="*User name:"/>
-            <h:inputText id="username" value="#{registrationBean.username}" title="Enter username" required="true" requiredMessage="Mandatory Field"/>
+            <h:inputText id="username" value="#{registrationBean.username}" title="Enter username" required="true" requiredMessage="Mandatory Field" converter="toLowerCaseConverter"/>
             <h:message style="color:red" for="username"/>
             <br/>
 

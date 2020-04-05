@@ -57,7 +57,7 @@ public class UserBean implements Serializable {
     }
 
     public SystemUser getUser() {
-        user = usrSrv.getCurrentUser();
+        user = (user == null) ? usrSrv.getCurrentUser() : user;
         
         return user;
     }
@@ -67,9 +67,7 @@ public class UserBean implements Serializable {
         Map<String, String> params = fc.getExternalContext().getRequestParameterMap();
         
         String username = params.get("toUser");
-        if(username != null) {
-            toUser = usrSrv.getUser(username);
-        }
+        toUser = (username != null) ? usrSrv.getUser(username) : toUser;
         
         return toUser;
     }

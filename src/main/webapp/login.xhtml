@@ -8,7 +8,7 @@
     <h:body>
         <h2>Please, log in:</h2>
         <form action="j_security_check" name="loginForm">
-            Username: <input type="text" name="j_username" size="20"/>
+            Username: <input type="text" name="j_username" size="20" converter="toLowerCaseConverter"/>
             Password: <input type="password" name="j_password" size="20"/>
             <br/>
             <button value="Login" type="submit">Login</button>
