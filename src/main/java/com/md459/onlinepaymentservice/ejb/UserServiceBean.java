@@ -5,7 +5,6 @@
  */
 package com.md459.onlinepaymentservice.ejb;
 
-import com.md459.onlinepaymentservice.entity.PaymentTransaction;
 import com.md459.onlinepaymentservice.entity.SystemUser;
 import com.md459.onlinepaymentservice.entity.SystemUserGroup;
 import java.io.UnsupportedEncodingException;
@@ -14,7 +13,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.*;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,7 +26,7 @@ import javax.persistence.TypedQuery;
  * @author marko
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class UserServiceBean implements UserService {
     
     @PersistenceContext
@@ -34,107 +35,11 @@ public class UserServiceBean implements UserService {
     public UserServiceBean() {}
     
     @Override
-    public List<PaymentTransaction> getTransactionHistory(SystemUser user) {
-        TypedQuery<PaymentTransaction> query = em.createQuery(
-            "SELECT t FROM PaymentTransaction t WHERE t.fromUser = :user OR t.toUser = :user",
-                PaymentTransaction.class);
+    public List<SystemUser> getAllUsers() {
+        TypedQuery<SystemUser> query = em.createQuery(
+            "SELECT u FROM SystemUser u", SystemUser.class);
         
-        return query
-                .setParameter("user", user)
-                .getResultList();
-    }
-    
-    @Override
-    public void acceptRequest(long reqId) {
-        PaymentTransaction transaction = getTransaction(reqId);
-        
-        if(transaction.getStatus().equals("PENDING")) {
-            SystemUser fromUser = transaction.getFromUser();
-            SystemUser toUser = transaction.getToUser();
-
-            double transferAmount = convert(transaction.getAmount(), toUser.getCurrency(), fromUser.getCurrency());
-            if(fromUser.getBalance() >= transferAmount) {
-                fromUser.setBalance(fromUser.getBalance() - transferAmount);
-                toUser.setBalance(toUser.getBalance() + transaction.getAmount());
-
-                transaction.setStatus("COMPLETE");
-            } else {
-                // throw exception here
-            }
-        }
-    }
-    
-    @Override
-    public void rejectRequest(long reqId) {
-        PaymentTransaction transaction = getTransaction(reqId);
-        
-        if(transaction.getStatus().equals("PENDING")) {
-            transaction.setStatus("VOID");
-        }
-    }
-    
-    private PaymentTransaction getTransaction(long id) {
-        TypedQuery<PaymentTransaction> query = em.createQuery(
-            "SELECT t FROM PaymentTransaction t WHERE t.id = :id", PaymentTransaction.class);
-        
-        return query
-                .setParameter("id", id)
-                .getSingleResult();
-    }
-    
-    @Override
-    public void requestPayment(String username, double amount, String description) {
-        SystemUser toUser = getCurrentUser();
-        SystemUser fromUser = getUser(username);
-        
-        double transferAmount = convert(amount, fromUser.getCurrency(), toUser.getCurrency());
-        PaymentTransaction transaction = new PaymentTransaction(fromUser, toUser, transferAmount, description);
-        
-        transaction.setStatus("PENDING");
-        
-        em.persist(transaction);
-    }
-    
-    @Override
-    public int getNumRequests(SystemUser user) {
-        return getPaymentRequests(user).size();
-    }
-    
-    @Override
-    public List<PaymentTransaction> getPaymentRequests(SystemUser user) {
-        TypedQuery<PaymentTransaction> query = em.createQuery(
-            "SELECT t FROM PaymentTransaction t WHERE t.fromUser = :user AND t.status = :status",
-                PaymentTransaction.class);
-        
-        return query
-                .setParameter("user", user)
-                .setParameter("status", "PENDING")
-                .getResultList();
-    }
-    
-    @Override
-    public void makePayment(String username, double amount, String description) {
-        SystemUser fromUser = getCurrentUser();
-        SystemUser toUser = getUser(username);
-        
-        double transferAmount = convert(amount, fromUser.getCurrency(), toUser.getCurrency());
-        if(fromUser.getBalance() >= transferAmount) {
-            PaymentTransaction transaction = new PaymentTransaction(fromUser, toUser, transferAmount, description);
-
-            fromUser.setBalance(fromUser.getBalance() - amount);
-            toUser.setBalance(toUser.getBalance() + transferAmount);
-
-            transaction.setStatus("COMPLETE");
-
-            em.persist(transaction);
-        } else {
-            // throw exception here
-        }
-    }
-    
-    private double convert(double amount, String currencyFrom, String currencyTo) {
-        // TODO: implement conversion
-        return amount;
+        return query.getResultList();
     }
     
     @Override
@@ -157,9 +62,9 @@ public class UserServiceBean implements UserService {
     @Override
     public List<SystemUser> searchUsers(String searchTerm) {
         TypedQuery<SystemUser> query = em.createQuery(
-                "SELECT u FROM SystemUser u WHERE CONCAT(u.name, \" \", u.surname) LIKE :searchTerm", SystemUser.class);
+                "SELECT u FROM SystemUser u WHERE LOWER(CONCAT(u.name, \" \", u.surname)) LIKE LOWER(:searchTerm)", SystemUser.class);
         
-        String pattern = "%" + searchTerm.toLowerCase() + "%";
+        String pattern = "%" + searchTerm + "%";
         return query
                 .setParameter("searchTerm", pattern)
                 .getResultList();

@@ -6,9 +6,17 @@
         <title>Admin Landing Page</title>
     </h:head>
     <h:body>
-        Hello admin
+        Hello #{userBean.user.username}
         <br/>
+        
         <h:link value="Register a new admin" outcome="registerAdmin"/>
+        <br/>
+        
+        <h:link value="View all users" outcome="allUsers"/>
+        <br/>
+        
+        <h:link value="View all transactions" outcome="allTransactions"/>
+        <br/>
     </h:body>
 </html>
 

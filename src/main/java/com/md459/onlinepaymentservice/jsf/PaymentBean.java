@@ -5,6 +5,7 @@
  */
 package com.md459.onlinepaymentservice.jsf;
 
+import com.md459.onlinepaymentservice.ejb.PaymentTransactionService;
 import com.md459.onlinepaymentservice.ejb.UserService;
 import com.md459.onlinepaymentservice.entity.SystemUser;
 import javax.ejb.EJB;
@@ -18,9 +19,9 @@ import javax.inject.Named;
 @Named
 @RequestScoped
 public class PaymentBean {
-    
+        
     @EJB
-    UserService usrSrv;
+    PaymentTransactionService txnSrv;
     
     private SystemUser toUser;
     private double amount;
@@ -29,13 +30,13 @@ public class PaymentBean {
     public PaymentBean() {}
     
     public String requestPayment(String username) {
-        usrSrv.requestPayment(username, amount, description);
+        txnSrv.requestPayment(username, amount, description);
         // add a payment confirmation page
         return "user";
     }
     
     public String makePayment(String username) {
-        usrSrv.makePayment(username, amount, description);
+        txnSrv.makePayment(username, amount, description);
         // add a payment confirmation page
         return "user";
     }

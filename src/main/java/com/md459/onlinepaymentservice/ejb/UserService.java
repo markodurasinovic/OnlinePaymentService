@@ -5,7 +5,6 @@
  */
 package com.md459.onlinepaymentservice.ejb;
 
-import com.md459.onlinepaymentservice.entity.PaymentTransaction;
 import com.md459.onlinepaymentservice.entity.SystemUser;
 import java.util.List;
 import javax.ejb.Local;
@@ -17,13 +16,7 @@ import javax.ejb.Local;
 @Local
 public interface UserService {
     
-    public List<PaymentTransaction> getTransactionHistory(SystemUser user);
-    public void acceptRequest(long reqId);
-    public void rejectRequest(long reqId);
-    public void requestPayment(String username, double amount, String description);
-    public int getNumRequests(SystemUser user);
-    public List<PaymentTransaction> getPaymentRequests(SystemUser user);
-    public void makePayment(String username, double amount, String description);
+    public List<SystemUser> getAllUsers();
     public SystemUser getCurrentUser();
     public SystemUser getUser(String username);
     public List<SystemUser> searchUsers(String searchTerm);

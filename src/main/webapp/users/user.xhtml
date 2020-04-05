@@ -13,7 +13,8 @@
         <br/>
         
         <h:form>
-            <h:inputText id="searchUsers" value="#{searchBean.searchTerm}"/>
+            <h:inputText id="searchUsers" value="#{searchBean.searchTerm}" required="true" requiredMessage="Please enter a search term."/>
+            <h:message style="color:red" for="searchUsers"/> 
             <h:commandButton value="Search for User" action="userSearchResult"/>
         </h:form>
         <br/>

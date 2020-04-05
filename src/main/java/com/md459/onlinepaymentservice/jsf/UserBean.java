@@ -5,6 +5,7 @@
  */
 package com.md459.onlinepaymentservice.jsf;
 
+import com.md459.onlinepaymentservice.ejb.PaymentTransactionService;
 import com.md459.onlinepaymentservice.ejb.UserService;
 import com.md459.onlinepaymentservice.entity.PaymentTransaction;
 import com.md459.onlinepaymentservice.entity.SystemUser;
@@ -27,29 +28,32 @@ public class UserBean implements Serializable {
     @EJB
     UserService usrSrv;
     
+    @EJB
+    PaymentTransactionService txnSrv;
+    
     private SystemUser user;
     private SystemUser toUser;
     
     public UserBean() {}
     
     public List<PaymentTransaction> getTransactionHistory() {
-        return usrSrv.getTransactionHistory(user);
+        return txnSrv.getTransactionHistory(user);
     }
     
     public void acceptRequest(long reqId) {
-        usrSrv.acceptRequest(reqId);
+        txnSrv.acceptRequest(reqId);
     }
     
     public void rejectRequest(long reqId) {
-        usrSrv.rejectRequest(reqId);
+        txnSrv.rejectRequest(reqId);
     }
     
     public List<PaymentTransaction> getPaymentRequests() {
-        return usrSrv.getPaymentRequests(user);
+        return txnSrv.getPaymentRequests(user);
     }
     
     public int getNumRequests() {
-        return usrSrv.getNumRequests(user);
+        return txnSrv.getNumRequests(user);
     }
 
     public SystemUser getUser() {

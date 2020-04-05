@@ -7,10 +7,15 @@
         <title>User Search Results</title>
     </h:head>
     <h:body>
-        All registered users:
+        The following users match your search query:
         <br/>
         
-        <h:dataTable value="#{searchBean.searchUsers()}" var="user">
+        <h:dataTable value="#{adminBean.getAllUsers()}" var="user">
+            
+            <h:column>
+                <f:facet name="header">Username</f:facet>
+                #{user.username}
+            </h:column>
 
             <h:column>
                 <f:facet name="header">Name</f:facet>
@@ -23,13 +28,17 @@
             </h:column>
             
             <h:column>
-                <h:button value="Pay user" outcome="makePayment" rendered="#{user ne userBean.user}">
-                    <f:param name="toUser" value="#{user.username}"/>
-                </h:button>
+                <f:facet name="header">Balance</f:facet>
+                #{user.balance}
             </h:column>
             
             <h:column>
-                <h:button value="Request payment" outcome="requestPayment" rendered="#{user ne userBean.user}">
+                <f:facet name="header">Currency</f:facet>
+                #{user.currency}
+            </h:column>
+            
+            <h:column>
+                <h:button value="View transactions" rendered="#{user.usergroup.groupname ne 'ADMIN'}">
                     <f:param name="toUser" value="#{user.username}"/>
                 </h:button>
             </h:column>
