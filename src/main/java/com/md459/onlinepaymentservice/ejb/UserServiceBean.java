@@ -13,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -31,6 +32,9 @@ public class UserServiceBean implements UserService {
     
     @PersistenceContext
     private EntityManager em;
+    
+    @EJB
+    ConversionManager convMan;
     
     public UserServiceBean() {}
     
@@ -72,11 +76,18 @@ public class UserServiceBean implements UserService {
     
     @Override
     public void registerUser(String username, String password, String name, String surname, String currency) {
-        SystemUser user = new SystemUser(username, getDigest(password), name, surname, currency);
+        SystemUser user = new SystemUser(username, getDigest(password), name, surname);
         SystemUserGroup group = new SystemUserGroup(username, "USER");
+        
+        float initialBalance = getInitialBalance(currency);
+        user.setBalanceAndCurrency(initialBalance, currency);
         
         group.addUser(user);
         em.persist(group);     
+    }
+    
+    private float getInitialBalance(String currency) {
+        return convMan.getConvertedAmount("GBP", currency, 1000.00f);
     }
     
     @Override

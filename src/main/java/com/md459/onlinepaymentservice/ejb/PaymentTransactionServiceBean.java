@@ -30,6 +30,9 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     @EJB
     UserService usrSrv;
     
+    @EJB
+    ConversionManager convMan;
+    
     public PaymentTransactionServiceBean() {}
     
     @Override
@@ -59,7 +62,7 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
             SystemUser fromUser = transaction.getFromUser();
             SystemUser toUser = transaction.getToUser();
 
-            double transferAmount = convert(transaction.getAmount(), toUser.getCurrency(), fromUser.getCurrency());
+            float transferAmount = convert(toUser.getCurrency(), fromUser.getCurrency(), transaction.getAmount());
             if(fromUser.getBalance() >= transferAmount) {
                 fromUser.setBalance(fromUser.getBalance() - transferAmount);
                 toUser.setBalance(toUser.getBalance() + transaction.getAmount());
@@ -90,11 +93,11 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     }
     
     @Override
-    public void requestPayment(String username, double amount, String description) {
+    public void requestPayment(String username, float amount, String description) {
         SystemUser toUser = usrSrv.getCurrentUser();
         SystemUser fromUser = usrSrv.getUser(username);
         
-        double transferAmount = convert(amount, fromUser.getCurrency(), toUser.getCurrency());
+        float transferAmount = convert(fromUser.getCurrency(), toUser.getCurrency(), amount);
         PaymentTransaction transaction = new PaymentTransaction(fromUser, toUser, transferAmount, description);
         
         transaction.setStatus("PENDING");
@@ -120,11 +123,11 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     }
     
     @Override
-    public void makePayment(String username, double amount, String description) {
+    public void makePayment(String username, float amount, String description) {
         SystemUser fromUser = usrSrv.getCurrentUser();
         SystemUser toUser = usrSrv.getUser(username);
         
-        double transferAmount = convert(amount, fromUser.getCurrency(), toUser.getCurrency());
+        float transferAmount = convert(fromUser.getCurrency(), toUser.getCurrency(), amount);
         if(fromUser.getBalance() >= transferAmount) {
             PaymentTransaction transaction = new PaymentTransaction(fromUser, toUser, transferAmount, description);
 
@@ -139,8 +142,7 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
         }
     }
     
-    private double convert(double amount, String currencyFrom, String currencyTo) {
-        // TODO: implement conversion
-        return amount;
+    private float convert(String currency1, String currency2, float amount) {
+        return convMan.getConvertedAmount(currency1, currency2, amount);
     }
 }

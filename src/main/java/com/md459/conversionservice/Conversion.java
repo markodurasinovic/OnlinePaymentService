@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.md459.onlinepaymentservice.conversionservice;
+package com.md459.conversionservice;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,22 +29,34 @@ public class Conversion {
         rates = new HashMap<>();
         
         addRate("GBP", "USD", 1.24f);
-        addRate("USD", "GBP", 1/getRate("GBP", "USD"));
         addRate("GBP", "EUR", 1.14f);
-        addRate("EUR", "GBP", 1/getRate("GBP", "EUR"));
-        addRate("EUR", "USD", 1.09f);
-        addRate("USD", "EUR", 1/getRate("EUR", "USD"));
-        
+        addRate("EUR", "USD", 1.09f);        
     }
     
+    /**
+     * Adds exchange rates from currency1 to currency2, and from currency2
+     * to currency1, based on the rate provided to the method.
+     * 
+     * @param currency1
+     * @param currency2
+     * @param rate 
+     */
     private void addRate(String currency1, String currency2, float rate) {
         if(!rates.containsKey(currency1)) rates.put(currency1, new HashMap<>());
+        if(!rates.containsKey(currency2)) rates.put(currency2, new HashMap<>());
         
         rates.get(currency1).put(currency2, rate);
+        rates.get(currency2).put(currency1, 1/rate);
     }
     
     private float getRate(String currency1, String currency2) {
-        return rates.get(currency1).get(currency2);
+        float rate;
+        if(currency1.equals(currency2)) {
+            rate = 1f;
+        } else {
+            rate = rates.get(currency1).get(currency2);
+        }
+        return rate;
     }
     
     @GET

@@ -6,7 +6,6 @@
 package com.md459.onlinepaymentservice.jsf;
 
 import com.md459.onlinepaymentservice.ejb.PaymentTransactionService;
-import com.md459.onlinepaymentservice.ejb.UserService;
 import com.md459.onlinepaymentservice.entity.SystemUser;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -24,7 +23,7 @@ public class PaymentBean {
     PaymentTransactionService txnSrv;
     
     private SystemUser toUser;
-    private double amount;
+    private float amount;
     private String description;
     
     public PaymentBean() {}
@@ -49,11 +48,11 @@ public class PaymentBean {
         this.toUser = toUser;
     }
 
-    public double getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 

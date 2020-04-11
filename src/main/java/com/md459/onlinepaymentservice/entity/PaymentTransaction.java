@@ -31,7 +31,7 @@ public class PaymentTransaction implements Serializable {
     @ManyToOne
     private SystemUser toUser;
     
-    private double amount;
+    private float amount;
     private String currency;
     private String status;
     private String description;
@@ -41,7 +41,7 @@ public class PaymentTransaction implements Serializable {
     
     public PaymentTransaction() {}
     
-    public PaymentTransaction(SystemUser fromUser, SystemUser toUser, double amount, String description) {
+    public PaymentTransaction(SystemUser fromUser, SystemUser toUser, float amount, String description) {
         this.fromUser = fromUser;
         this.toUser = toUser;
         this.amount = amount;
@@ -89,11 +89,11 @@ public class PaymentTransaction implements Serializable {
         this.toUser = toUser;
     }
 
-    public double getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
     

@@ -26,7 +26,7 @@ public class UserGroupService {
     @PostConstruct
     public void init() {
         usrSrv.registerAdmin("admin1", "admin1");
-        usrSrv.registerUser("marko", "marko", "marko", "durasinovic", "GBP");
-        usrSrv.registerUser("luka", "luka", "luka", "durasinovic", "GBP");
+//        usrSrv.registerUser("marko", "marko", "marko", "durasinovic", "GBP");
+//        usrSrv.registerUser("luka", "luka", "luka", "durasinovic", "GBP");
     }
 }

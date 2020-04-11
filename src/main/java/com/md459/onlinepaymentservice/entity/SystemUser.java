@@ -33,7 +33,7 @@ public class SystemUser implements Serializable {
     private String name;
     private String surname;
     private String currency;
-    private double balance;
+    private float balance;
     
     @ManyToOne
     private SystemUserGroup usergroup;
@@ -53,16 +53,14 @@ public class SystemUser implements Serializable {
         this.name = null;
         this.surname = null;
         this.currency = null;
-        this.balance = 0;
+        this.balance = 0f;
     }
     
-    public SystemUser(String username, String userpassword, String name, String surname, String currency) {
+    public SystemUser(String username, String userpassword, String name, String surname) {
         this.username = username;
         this.userpassword = userpassword;
         this.name = capitalise(name);
         this.surname = capitalise(surname);
-        this.currency = currency;
-        this.balance = initBalance();
     }
 
     public String getUserpassword() {
@@ -81,27 +79,17 @@ public class SystemUser implements Serializable {
         this.currency = currency;
     }
 
-    public double getBalance() {
+    public float getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(float balance) {
         this.balance = balance;
     }
     
-    private double initBalance() {
-        // this should use REST instead
-        double defVal = 1000; // GBP
-        double USDRate = 1.23;
-        double EURRate = 1.14;
-        switch(this.currency) {
-            case "USD":
-                return defVal * USDRate;
-            case "EUR":
-                return defVal * EURRate;
-            default:
-                return defVal;
-        }
+    public void setBalanceAndCurrency(float balance, String currency) {
+        this.balance = balance;
+        this.currency = currency;
     }
 
     @Override
