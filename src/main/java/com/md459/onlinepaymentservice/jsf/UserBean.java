@@ -67,6 +67,9 @@ public class UserBean implements Serializable {
         Map<String, String> params = fc.getExternalContext().getRequestParameterMap();
         
         String username = params.get("toUser");
+        // if toUser f:param has been set, indicates that toUser for the
+        // session has changed. i.e. the current user has selected a new 
+        // user to pay/request a payment from
         toUser = (username != null) ? usrSrv.getUser(username) : toUser;
         
         return toUser;
