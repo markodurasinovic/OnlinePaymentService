@@ -38,10 +38,10 @@ public class SystemUser implements Serializable {
     @ManyToOne
     private SystemUserGroup usergroup;
     
-    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "payer", cascade = CascadeType.PERSIST)
     private List<PaymentTransaction> fromTransactions;
     
-    @OneToMany(mappedBy = "toUser", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "payee", cascade = CascadeType.PERSIST)
     private List<PaymentTransaction> toTransactions;
 
     public SystemUser() {}

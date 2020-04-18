@@ -12,10 +12,14 @@ import com.md459.onlinepaymentservice.entity.SystemUser;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -34,7 +38,32 @@ public class UserBean implements Serializable {
     private SystemUser user;
     private SystemUser toUser;
     
+    /**
+     * TODO: REDUCE NUMBER OF QUERIES TO USER TABLE
+     * right now, one query is being made for each field displayed
+     * in view (name, surname, currency, balance).
+     * instead, on view-display, one query should run - retrieving
+     * all necessary information.
+     */
     public UserBean() {}
+    
+    @PostConstruct
+    public void init() {
+        user = getUser();
+    }
+    
+    public String logout() {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
+        try {
+            request.logout();
+            fc.addMessage(null, new FacesMessage("User is logged out."));
+            return "index";
+        } catch (ServletException e) {
+            fc.addMessage(null, new FacesMessage("Logout failed."));
+            return "user";
+        }
+    }
     
     public List<PaymentTransaction> getTransactionHistory() {
         return txnSrv.getTransactionHistory(user);
@@ -57,10 +86,12 @@ public class UserBean implements Serializable {
     }
 
     public SystemUser getUser() {
-//        user = (user == null) ? usrSrv.getCurrentUser() : user;
-//        
-//        return user;
-        return usrSrv.getCurrentUser();
+        FacesContext fc = FacesContext.getCurrentInstance();
+        String username = fc.getExternalContext().getRemoteUser();
+                
+        if(username != null) user =  usrSrv.getUser(username);
+                
+        return user;
     }
     
     public SystemUser getToUser() {
@@ -74,5 +105,21 @@ public class UserBean implements Serializable {
         toUser = (username != null) ? usrSrv.getUser(username) : toUser;
         
         return toUser;
+    }
+    
+    public String getName() {
+        return user.getName();
+    }
+    
+    public String getSurname() {
+        return user.getSurname();
+    }
+    
+    public String getCurrency() {
+        return user.getCurrency();
+    }
+    
+    public float getBalance() {
+        return user.getBalance();
     }
 }

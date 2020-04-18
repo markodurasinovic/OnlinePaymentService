@@ -38,8 +38,8 @@
             </h:column>
             
             <h:column>
-                <h:button value="View transactions" rendered="#{user.usergroup.groupname ne 'ADMIN'}">
-                    <f:param name="toUser" value="#{user.username}"/>
+                <h:button value="View transactions" rendered="#{user.usergroup.groupname ne 'ADMIN'}" outcome="userTransactions">
+                    <f:param name="username" value="#{user.username}"/>
                 </h:button>
             </h:column>
 

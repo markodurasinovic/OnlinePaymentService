@@ -21,8 +21,8 @@ public interface PaymentTransactionService {
     public void acceptRequest(long reqId);
     public void rejectRequest(long reqId);
     public List<PaymentTransaction> getTransactionHistory(SystemUser user);
-    public void requestPayment(String username, float amount, String description);
+    public void requestPayment(String requester, String requestee, float amount, String description);
     public int getNumRequests(SystemUser user);
     public List<PaymentTransaction> getPaymentRequests(SystemUser user);
-    public void makePayment(String username, float amount, String description);
+    public void makePayment(String payer, String payee, float amount, String description);
 }

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -27,7 +28,6 @@ import javax.persistence.TypedQuery;
  * @author marko
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class UserServiceBean implements UserService {
     
     @PersistenceContext
@@ -44,13 +44,6 @@ public class UserServiceBean implements UserService {
             "SELECT u FROM SystemUser u", SystemUser.class);
         
         return query.getResultList();
-    }
-    
-    @Override
-    public SystemUser getCurrentUser() {
-        String username = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-        System.out.print("GETTING CURRENT USER " + username);
-        return getUser(username);
     }
     
     @Override
@@ -75,7 +68,26 @@ public class UserServiceBean implements UserService {
     }
     
     @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void registerUser(String username, String password, String name, String surname, String currency) {
+         if(hasUser(username)) {
+             throw new EJBException("User with this username already exists.");
+         } else {
+             register(username, password, name, surname, currency);
+         }
+    }
+    
+    private boolean hasUser(String username) {
+        TypedQuery<SystemUser> query = em.createQuery(
+            "SELECT u FROM SystemUser u WHERE u.username = :username", SystemUser.class);
+        
+        return !query
+                .setParameter("username", username)
+                .getResultList()
+                .isEmpty();
+    }
+    
+    private void register(String username, String password, String name, String surname, String currency) {
         SystemUser user = new SystemUser(username, getDigest(password), name, surname);
         SystemUserGroup group = new SystemUserGroup(username, "USER");
         
@@ -83,7 +95,7 @@ public class UserServiceBean implements UserService {
         user.setBalanceAndCurrency(initialBalance, currency);
         
         group.addUser(user);
-        em.persist(group);     
+        em.persist(group);    
     }
     
     private float getInitialBalance(String currency) {
@@ -91,6 +103,7 @@ public class UserServiceBean implements UserService {
     }
     
     @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void registerAdmin(String username, String password) {
         SystemUser admin = new SystemUser(username, getDigest(password));
         SystemUserGroup group = new SystemUserGroup(username, "ADMIN");
@@ -101,7 +114,7 @@ public class UserServiceBean implements UserService {
     
     private String getDigest(String password) {
         String pwd = password;
-        try {
+        try {   
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(password.getBytes("UTF-8"));
             byte[] digest = md.digest();

@@ -11,8 +11,10 @@ import com.md459.onlinepaymentservice.entity.PaymentTransaction;
 import com.md459.onlinepaymentservice.entity.SystemUser;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 /**
@@ -29,7 +31,13 @@ public class AdminBean implements Serializable {
     @EJB
     PaymentTransactionService txnSrv;
     
+    private SystemUser observedUser;
+    
     public AdminBean() {}
+    
+    public List<PaymentTransaction> getTransactionHistory(SystemUser user) {
+        return txnSrv.getTransactionHistory(user);
+    }
     
     public List<PaymentTransaction> getAllTransactions() {
         return txnSrv.getAllTransactions();
@@ -37,5 +45,18 @@ public class AdminBean implements Serializable {
     
     public List<SystemUser> getAllUsers() {
         return usrSrv.getAllUsers();
+    }
+
+    public SystemUser getObservedUser() {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        Map<String, String> params = fc.getExternalContext().getRequestParameterMap();
+        String username = params.get("username");
+        observedUser = (username != null) ? usrSrv.getUser(username) : observedUser;
+        
+        return observedUser;
+    }
+
+    public void setObservedUser(SystemUser observedUser) {
+        this.observedUser = observedUser;
     }
 }

@@ -9,6 +9,7 @@ import com.md459.onlinepaymentservice.entity.PaymentTransaction;
 import com.md459.onlinepaymentservice.entity.SystemUser;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -21,7 +22,6 @@ import javax.persistence.TypedQuery;
  * @author marko
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class PaymentTransactionServiceBean implements PaymentTransactionService {
     
     @PersistenceContext
@@ -46,7 +46,7 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     @Override
     public List<PaymentTransaction> getTransactionHistory(SystemUser user) {
         TypedQuery<PaymentTransaction> query = em.createQuery(
-            "SELECT t FROM PaymentTransaction t WHERE t.fromUser = :user OR t.toUser = :user",
+            "SELECT t FROM PaymentTransaction t WHERE t.payer = :user OR t.payee = :user",
                 PaymentTransaction.class);
         
         return query
@@ -55,12 +55,13 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     }
     
     @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void acceptRequest(long reqId) {
         PaymentTransaction transaction = getTransaction(reqId);
         
         if(transaction.getStatus().equals("PENDING")) {
-            SystemUser fromUser = transaction.getFromUser();
-            SystemUser toUser = transaction.getToUser();
+            SystemUser fromUser = transaction.getPayer();
+            SystemUser toUser = transaction.getPayee();
 
             float transferAmount = convert(toUser.getCurrency(), fromUser.getCurrency(), transaction.getAmount());
             if(fromUser.getBalance() >= transferAmount) {
@@ -69,7 +70,7 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
 
                 transaction.setStatus("COMPLETE");
             } else {
-                // throw exception here
+                throw new EJBException("Insufficient funds.");
             }
         }
     }
@@ -93,14 +94,15 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     }
     
     @Override
-    public void requestPayment(String username, float amount, String description) {
-        SystemUser toUser = usrSrv.getCurrentUser();
-        SystemUser fromUser = usrSrv.getUser(username);
+    public void requestPayment(String requester, String requestee, float amount, String description) {
+        if(requester.equals(requestee)) throw new EJBException("User cannot request a payment from self.");
         
-        float transferAmount = convert(fromUser.getCurrency(), toUser.getCurrency(), amount);
-        PaymentTransaction transaction = new PaymentTransaction(fromUser, toUser, transferAmount, description);
+        SystemUser payee = usrSrv.getUser(requester);
+        SystemUser payer = usrSrv.getUser(requestee);
         
-        transaction.setStatus("PENDING");
+        float transferAmount = convert(payer.getCurrency(), payee.getCurrency(), amount);
+        PaymentTransaction transaction = new PaymentTransaction(
+                payer, payee, transferAmount, description, payer.getCurrency());
         
         em.persist(transaction);
     }
@@ -113,7 +115,7 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     @Override
     public List<PaymentTransaction> getPaymentRequests(SystemUser user) {
         TypedQuery<PaymentTransaction> query = em.createQuery(
-            "SELECT t FROM PaymentTransaction t WHERE t.fromUser = :user AND t.status = :status",
+            "SELECT t FROM PaymentTransaction t WHERE t.payer = :user AND t.status = :status",
                 PaymentTransaction.class);
         
         return query
@@ -123,22 +125,28 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     }
     
     @Override
-    public void makePayment(String username, float amount, String description) {
-        SystemUser fromUser = usrSrv.getCurrentUser();
-        SystemUser toUser = usrSrv.getUser(username);
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void makePayment(String payerUsername, String payeeUsername, float amount, String description) {
+        if(payerUsername.equals(payeeUsername)) throw new EJBException("User cannot make a payment to self");
         
-        float transferAmount = convert(fromUser.getCurrency(), toUser.getCurrency(), amount);
-        if(fromUser.getBalance() >= transferAmount) {
-            PaymentTransaction transaction = new PaymentTransaction(fromUser, toUser, transferAmount, description);
+        SystemUser payer = usrSrv.getUser(payerUsername);
+        SystemUser payee = usrSrv.getUser(payeeUsername);        
+        
+        
+        float transferAmount = convert(payer.getCurrency(), payee.getCurrency(), amount);
+        PaymentTransaction transaction = new PaymentTransaction(
+                payer, payee, transferAmount, description, payer.getCurrency());
 
-            fromUser.setBalance(fromUser.getBalance() - amount);
-            toUser.setBalance(toUser.getBalance() + transferAmount);
+        if(payer.getBalance() >= transferAmount) {
+
+            payer.setBalance(payer.getBalance() - amount);
+            payee.setBalance(payee.getBalance() + transferAmount);
 
             transaction.setStatus("COMPLETE");
 
             em.persist(transaction);
         } else {
-            // throw exception here
+            throw new EJBException("Insufficient funds.");
         }
     }
     

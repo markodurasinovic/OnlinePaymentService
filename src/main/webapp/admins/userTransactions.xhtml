@@ -4,14 +4,13 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Transaction History</title>
+        <title>User Transactions</title>
     </h:head>
     <h:body>
-        These are your previous transactions:
+        Transactions for user: #{adminBean.observedUser.username}
         <br/>
         
-        <h:dataTable value="#{userBean.getTransactionHistory()}" var="txn">
-        
+        <h:dataTable value="#{adminBean.getTransactionHistory(adminBean.observedUser)}" var="txn">
             <h:column>
                 <f:facet name="header">Date</f:facet>
                 #{txn.creationTime}

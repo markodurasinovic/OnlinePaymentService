@@ -6,6 +6,7 @@
         <title>User Landing Page</title>
     </h:head>
     <h:body>
+        
         Hello #{userBean.user.name} #{userBean.user.surname}!
         <br/>
         
@@ -23,6 +24,11 @@
         <br/>
         
         <h:link value="You have #{userBean.numRequests} payment requests" outcome="requests"/>
+        <br/>
+        
+        <h:form>
+            <h:commandButton value="Logout" action="#{userBean.logout()}"/>
+        </h:form>
     </h:body>
 </html>
 

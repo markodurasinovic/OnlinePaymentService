@@ -3,7 +3,10 @@ package com.md459.onlinepaymentservice.jsf;
 
 import com.md459.onlinepaymentservice.ejb.UserService;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 /*
@@ -34,8 +37,14 @@ public class RegistrationBean {
     }
     
     public String registerUser() {
-        usrSrv.registerUser(username, password, name, surname, currency);
-        return "index";
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            usrSrv.registerUser(username, password, name, surname, currency);
+            return "index";
+        } catch(EJBException e) {
+            context.addMessage(null, new FacesMessage(e.getMessage()));
+            return "registerUser";
+        }        
     }
     
     public String registerAdmin() {
