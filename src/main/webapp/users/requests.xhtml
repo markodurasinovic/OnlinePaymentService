@@ -29,9 +29,9 @@
             
             <h:column>
                 <h:form>
-                    <h:commandButton value="Accept" rendered="#{req.status eq 'PENDING'}" action="#{userBean.acceptRequest(req.id)}"/>
+                    <h:commandButton value="Accept" rendered="#{req.status eq 'PENDING'}" action="#{paymentBean.acceptRequest(req.id)}"/>
                     <br/>
-                    <h:commandButton value="Reject" rendered="#{req.status eq 'PENDING'}" action="#{userBean.rejectRequest(req.id)}"/>
+                    <h:commandButton value="Reject" rendered="#{req.status eq 'PENDING'}" action="#{paymentBean.rejectRequest(req.id)}"/>
                 </h:form>
             </h:column>
             

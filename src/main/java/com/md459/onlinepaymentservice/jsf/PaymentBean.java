@@ -6,7 +6,6 @@
 package com.md459.onlinepaymentservice.jsf;
 
 import com.md459.onlinepaymentservice.ejb.PaymentTransactionService;
-import com.md459.onlinepaymentservice.entity.SystemUser;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.enterprise.context.RequestScoped;
@@ -53,6 +52,22 @@ public class PaymentBean {
             fc.addMessage(null, new FacesMessage(e.getMessage()));
             return "fail";
         }
+    }
+    
+    public void acceptRequest(long reqId) {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        try {
+            txnSrv.acceptRequest(reqId);
+            fc.addMessage(null, new FacesMessage("Request has been accepted."));
+        } catch(EJBException e) {
+            fc.addMessage(null, new FacesMessage(e.getMessage()));
+        }
+    }
+    
+    public void rejectRequest(long reqId) {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        txnSrv.rejectRequest(reqId);
+        fc.addMessage(null, new FacesMessage("Request has been rejected."));
     }
 
     public float getAmount() {

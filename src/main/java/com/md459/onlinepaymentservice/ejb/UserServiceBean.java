@@ -69,11 +69,10 @@ public class UserServiceBean implements UserService {
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void registerUser(String username, String password, String name, String surname, String currency) {
-         if(hasUser(username)) {
+         if(hasUser(username))
              throw new EJBException("User with this username already exists.");
-         } else {
-             register(username, password, name, surname, currency);
-         }
+         
+        register(username, password, name, surname, currency); 
     }
     
     @Override
@@ -105,6 +104,9 @@ public class UserServiceBean implements UserService {
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void registerAdmin(String username, String password) {
+        if(hasUser(username)) 
+            throw new EJBException("Admin with this username already exists.");
+        
         SystemUser admin = new SystemUser(username, getDigest(password));
         SystemUserGroup group = new SystemUserGroup(username, "ADMIN");
         

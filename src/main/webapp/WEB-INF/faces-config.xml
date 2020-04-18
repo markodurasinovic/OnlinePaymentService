@@ -60,6 +60,7 @@
         </navigation-case>
     </navigation-rule>
     
+    <!-- navigation for user views -->
     <navigation-rule>
         <from-view-id>/users/user.xhtml</from-view-id>
         
@@ -105,6 +106,63 @@
             <from-action>#{paymentBean.requestPayment()}</from-action>
             <from-outcome>fail</from-outcome>
             <to-view-id>/users/requestPayment.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <!-- navigation for admin views -->    
+    <navigation-rule>
+        <from-view-id>/admins/admin.xhtml</from-view-id>
+        
+        <navigation-case>
+            <from-outcome>registerAdmin</from-outcome>
+            <to-view-id>/admins/registerAdmin.xhtml</to-view-id>
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>allUsers</from-outcome>
+            <to-view-id>/admins/allUsers.xhtml</to-view-id>
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>allTransactions</from-outcome>
+            <to-view-id>/admins/allTransactions.xhtml</to-view-id>
+        </navigation-case>
+        
+        <navigation-case>
+            <from-action>#{userBean.logout()}</from-action>
+            <from-outcome>index</from-outcome>
+            <to-view-id>index.xhtml</to-view-id>
+        </navigation-case>
+        
+        <navigation-case>
+            <from-action>#{userBean.logout()}</from-action>
+            <from-outcome>user</from-outcome>
+            <to-view-id>/users/user.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/admins/allUsers.xhtml</from-view-id>
+        
+        <navigation-case>
+            <from-outcome>userTransactions</from-outcome>
+            <to-view-id>/admins/userTransactions.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/admins/registerAdmin.xhtml</from-view-id>
+        
+        <navigation-case>
+            <from-action>#{registrationBean.registerAdmin()}</from-action>
+            <from-outcome>admin</from-outcome>
+            <to-view-id>/admins/admin.xhtml</to-view-id>
+        </navigation-case>
+        
+        <navigation-case>
+            <from-action>#{registrationBean.registerAdmin()}</from-action>
+            <from-outcome>registerAdmin</from-outcome>
+            <to-view-id>/admins/registerAdmin.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 </faces-config>

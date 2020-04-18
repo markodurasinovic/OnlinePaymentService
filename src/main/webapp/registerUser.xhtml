@@ -8,30 +8,30 @@
     </h:head>
     <h:body>
         <h:form>
-            Register here:
+            Enter your details below:
             <br/>
 
-            <h:outputLabel for="username" value="*User name:"/>
+            <h:outputLabel for="username" value="Username:"/>
             <h:inputText id="username" value="#{registrationBean.username}" title="Enter username" required="true" requiredMessage="Mandatory Field" converter="toLowerCaseConverter"/>
             <h:message style="color:red" for="username"/>
             <br/>
 
-            <h:outputLabel for="password" value="*Password:"/>
+            <h:outputLabel for="password" value="Password:"/>
             <h:inputSecret id="password" value="#{registrationBean.password}" title="Enter password" required="true" requiredMessage="Mandatory Field"/>
             <h:messages style="color:red" for="password"/>
             <br/>
 
-            <h:outputLabel for="name" value="*First Name:"/>
+            <h:outputLabel for="name" value="First Name:"/>
             <h:inputText id="name" value="#{registrationBean.name}" title="Enter first name" required="true" requiredMessage="Mandatory Field"/>
             <h:message style="color:red" for="name"/>
             <br/>
 
-            <h:outputLabel for="surname" value="*Last Name:"/>
+            <h:outputLabel for="surname" value="Last Name:"/>
             <h:inputText id="surname" value="#{registrationBean.surname}" title="Enter last name" required="true" requiredMessage="Mandatory Field"/>
             <h:message style="color:red" for="surname"/>
             <br/>
             
-            <h:outputLabel for="currency" value="*Last Name:"/>
+            <h:outputLabel for="currency" value="Currency:"/>
             <h:selectOneMenu id="currency" value="#{registrationBean.currency}">
                 <f:selectItem itemValue="GBP" itemLabel="GBP"/>
                 <f:selectItem itemValue="USD" itemLabel="USD"/>

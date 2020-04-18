@@ -6,31 +6,22 @@
         <title>Register Admin</title>
     </h:head>
     <h:body>
-        Register an admin account:
-        
-        <br/>
+        <h:form>
+            Enter new admin's details below:        
+            <br/>
 
-            <h:outputLabel for="username" value="*User name:"/>
+            <h:outputLabel for="username" value="User name:"/>
             <h:inputText id="username" value="#{registrationBean.username}" title="Enter username" required="true" requiredMessage="Mandatory Field"/>
             <h:message style="color:red" for="username"/>
             <br/>
 
-            <h:outputLabel for="password" value="*Password:"/>
+            <h:outputLabel for="password" value="Password:"/>
             <h:inputSecret id="password" value="#{registrationBean.password}" title="Enter password" required="true" requiredMessage="Mandatory Field"/>
             <h:messages style="color:red" for="password"/>
             <br/>
 
-            <h:outputLabel for="name" value="(optional) First Name:"/>
-            <h:inputText id="name" value="#{registrationBean.name}" title="Enter first name" required="true" requiredMessage="Mandatory Field"/>
-            <h:message style="color:red" for="name"/>
-            <br/>
-
-            <h:outputLabel for="surname" value="(optional) Last Name:"/>
-            <h:inputText id="surname" value="#{registrationBean.surname}" title="Enter last name" required="true" requiredMessage="Mandatory Field"/>
-            <h:message style="color:red" for="surname"/>
-            <br/>
-
             <h:commandButton id="register" type="submit" value="Register" action="#{registrationBean.registerAdmin()}" title="Register User"/>
+        </h:form>
     </h:body>
 </html>
 

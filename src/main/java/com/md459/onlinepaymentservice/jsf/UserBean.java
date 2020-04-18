@@ -69,14 +69,6 @@ public class UserBean implements Serializable {
         return txnSrv.getTransactionHistory(user);
     }
     
-    public void acceptRequest(long reqId) {
-        txnSrv.acceptRequest(reqId);
-    }
-    
-    public void rejectRequest(long reqId) {
-        txnSrv.rejectRequest(reqId);
-    }
-    
     public List<PaymentTransaction> getPaymentRequests() {
         return txnSrv.getPaymentRequests(user);
     }

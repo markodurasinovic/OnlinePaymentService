@@ -37,19 +37,25 @@ public class RegistrationBean {
     }
     
     public String registerUser() {
-        FacesContext context = FacesContext.getCurrentInstance();
+        FacesContext fc = FacesContext.getCurrentInstance();
         try {
             usrSrv.registerUser(username, password, name, surname, currency);
             return "index";
         } catch(EJBException e) {
-            context.addMessage(null, new FacesMessage(e.getMessage()));
+            fc.addMessage(null, new FacesMessage(e.getMessage()));
             return "registerUser";
         }        
     }
     
     public String registerAdmin() {
-        usrSrv.registerAdmin(username, password);
-        return "index";
+        FacesContext fc = FacesContext.getCurrentInstance();
+        try {
+            usrSrv.registerAdmin(username, password);
+            return "admin";
+        } catch(EJBException e) {
+            fc.addMessage(null, new FacesMessage(e.getMessage()));
+            return "registerAdmin";
+        }
     }
 
     public String getUsername() {
