@@ -98,7 +98,13 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
         if(requester.equals(requestee)) throw new EJBException("User cannot request a payment from self.");
         
         SystemUser payee = usrSrv.getUser(requester);
-        SystemUser payer = usrSrv.getUser(requestee);
+        // Exception thrown if no user is found with username requestee.
+        SystemUser payer;
+        if(usrSrv.hasUser(requestee)) {
+            payer = usrSrv.getUser(requestee);
+        } else {
+            throw new EJBException("User does not exist.");
+        }
         
         float transferAmount = convert(payer.getCurrency(), payee.getCurrency(), amount);
         PaymentTransaction transaction = new PaymentTransaction(
@@ -127,11 +133,16 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void makePayment(String payerUsername, String payeeUsername, float amount, String description) {
-        if(payerUsername.equals(payeeUsername)) throw new EJBException("User cannot make a payment to self");
+        if(payerUsername.equals(payeeUsername)) throw new EJBException("User cannot make a payment to self.");
         
         SystemUser payer = usrSrv.getUser(payerUsername);
-        SystemUser payee = usrSrv.getUser(payeeUsername);        
-        
+        // Exception thrown if no user is found with payeeUsername.
+        SystemUser payee;
+        if(usrSrv.hasUser(payeeUsername)) {
+            payee = usrSrv.getUser(payeeUsername);
+        } else {
+            throw new EJBException("User does not exist.");
+        }
         
         float transferAmount = convert(payer.getCurrency(), payee.getCurrency(), amount);
         PaymentTransaction transaction = new PaymentTransaction(

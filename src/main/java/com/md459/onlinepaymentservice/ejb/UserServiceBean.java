@@ -18,7 +18,6 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -50,7 +49,7 @@ public class UserServiceBean implements UserService {
     public SystemUser getUser(String username) {
         TypedQuery<SystemUser> query = em.createQuery(
                 "SELECT u FROM SystemUser u WHERE u.username = :username", SystemUser.class);
-                
+        
         return query
                 .setParameter("username", username)
                 .getSingleResult();
@@ -77,7 +76,8 @@ public class UserServiceBean implements UserService {
          }
     }
     
-    private boolean hasUser(String username) {
+    @Override
+    public boolean hasUser(String username) {
         TypedQuery<SystemUser> query = em.createQuery(
             "SELECT u FROM SystemUser u WHERE u.username = :username", SystemUser.class);
         

@@ -6,15 +6,22 @@
         <title>Make Payment</title>
     </h:head>
     <h:body>
-        Make a payment to #{userBean.toUser.name} #{userBean.toUser.surname}
+        Fill out the details below to make a payment to a user:
         <br/>
         
         <h:form>
-            Amount: <h:inputText id="amount" value="#{paymentBean.amount}"/>
+            Username: <h:inputText id="username" value="#{paymentBean.username}" required="true" requiredMessage="Mandatory Field"/>
+            <h:message style="color:red" for="username"/>
             <br/>
+            
+            Amount: <h:inputText id="amount" value="#{paymentBean.amount}" required="true" requiredMessage="Mandatory Field"/>
+            <h:message style="color:red" for="amount"/>
+            <br/>
+            
             Description: <h:inputTextarea id="description" value="#{paymentBean.description}"/>
             <br/>
-            <h:commandButton value="Confirm" action="#{paymentBean.makePayment(userBean.toUser.username)}"/>
+            
+            <h:commandButton value="Confirm" action="#{paymentBean.makePayment()}"/>
         </h:form>
     </h:body>
 </html>

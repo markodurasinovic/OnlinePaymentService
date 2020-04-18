@@ -8,7 +8,9 @@ package com.md459.onlinepaymentservice.jsf;
 import com.md459.onlinepaymentservice.ejb.PaymentTransactionService;
 import com.md459.onlinepaymentservice.entity.SystemUser;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
@@ -23,34 +25,34 @@ public class PaymentBean {
     @EJB
     PaymentTransactionService txnSrv;
     
-    private SystemUser payee;
+    private String username;
     private float amount;
     private String description;
     
     public PaymentBean() {}
     
-    public String requestPayment(String requestee) {
+    public String requestPayment() {
         FacesContext fc = FacesContext.getCurrentInstance();
         String requester = fc.getExternalContext().getRemoteUser();
-        txnSrv.requestPayment(requester, requestee, amount, description);
-        // add a payment confirmation page
-        return "user";
+        try {
+            txnSrv.requestPayment(requester, username, amount, description);
+            return "success";
+        } catch(EJBException e) {
+            fc.addMessage(null, new FacesMessage(e.getMessage()));
+            return "fail";
+        }
     }
     
-    public String makePayment(String payee) {
+    public String makePayment() {
         FacesContext fc = FacesContext.getCurrentInstance();
         String payer = fc.getExternalContext().getRemoteUser();
-        txnSrv.makePayment(payer, payee, amount, description);
-        // add a payment confirmation page
-        return "user";
-    }
-
-    public SystemUser getPayee() {
-        return payee;
-    }
-
-    public void setPayee(SystemUser payee) {
-        this.payee = payee;
+        try {
+            txnSrv.makePayment(payer, username, amount, description);
+            return "success";
+        } catch(EJBException e) {
+            fc.addMessage(null, new FacesMessage(e.getMessage()));
+            return "fail";
+        }
     }
 
     public float getAmount() {
@@ -67,6 +69,14 @@ public class PaymentBean {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
     
     

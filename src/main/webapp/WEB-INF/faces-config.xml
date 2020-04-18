@@ -25,7 +25,7 @@
               xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd">
 
     
-    <navigation-rule>
+<!--    <navigation-rule>
         <from-view-id>index.xhtml</from-view-id>
         
         <navigation-case>
@@ -42,19 +42,19 @@
             <from-outcome>registerUser</from-outcome>
             <to-view-id>registerUser.xhtml</to-view-id>
         </navigation-case>
-    </navigation-rule>
+    </navigation-rule>-->
     
     <navigation-rule>
         <from-view-id>registerUser.xhtml</from-view-id>
         
         <navigation-case>
-            <from-action>registrationBean.registerUser()</from-action>
+            <from-action>#{registrationBean.registerUser()}</from-action>
             <from-outcome>index</from-outcome>
             <to-view-id>index.xhtml</to-view-id>
         </navigation-case>
         
         <navigation-case>
-            <from-action>registrationBean.registerUser()</from-action>
+            <from-action>#{registrationBean.registerUser()}</from-action>
             <from-outcome>registerUser</from-outcome>
             <to-view-id>registerUser.xhtml</to-view-id>
         </navigation-case>
@@ -73,6 +73,38 @@
             <from-action>#{userBean.logout()}</from-action>
             <from-outcome>user</from-outcome>
             <to-view-id>/users/user.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/users/makePayment.xhtml</from-view-id>
+        
+        <navigation-case>
+            <from-action>#{paymentBean.makePayment()}</from-action>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/users/user.xhtml</to-view-id>
+        </navigation-case>
+        
+        <navigation-case>
+            <from-action>#{paymentBean.makePayment()}</from-action>
+            <from-outcome>fail</from-outcome>
+            <to-view-id>/users/makePayment.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/users/requestPayment.xhtml</from-view-id>
+        
+        <navigation-case>
+            <from-action>#{paymentBean.requestPayment()}</from-action>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/users/user.xhtml</to-view-id>
+        </navigation-case>
+        
+        <navigation-case>
+            <from-action>#{paymentBean.requestPayment()}</from-action>
+            <from-outcome>fail</from-outcome>
+            <to-view-id>/users/requestPayment.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 </faces-config>
