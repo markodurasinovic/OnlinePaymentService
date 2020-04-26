@@ -5,6 +5,7 @@
  */
 package com.md459.onlinepaymentservice.ejb;
 
+import com.md459.onlinepaymentservice.dao.SystemUserDAO;
 import com.md459.onlinepaymentservice.entity.SystemUser;
 import com.md459.onlinepaymentservice.entity.SystemUserGroup;
 import java.io.UnsupportedEncodingException;
@@ -18,9 +19,6 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
 /**
  *
@@ -29,8 +27,8 @@ import javax.persistence.TypedQuery;
 @Stateless
 public class UserServiceBean implements UserService {
     
-    @PersistenceContext
-    private EntityManager em;
+    @EJB
+    SystemUserDAO userDAO;
     
     @EJB
     ConversionManager convMan;
@@ -39,31 +37,12 @@ public class UserServiceBean implements UserService {
     
     @Override
     public List<SystemUser> getAllUsers() {
-        TypedQuery<SystemUser> query = em.createQuery(
-            "SELECT u FROM SystemUser u", SystemUser.class);
-        
-        return query.getResultList();
+        return userDAO.getAllUsers();
     }
     
     @Override
     public SystemUser getUser(String username) {
-        TypedQuery<SystemUser> query = em.createQuery(
-                "SELECT u FROM SystemUser u WHERE u.username = :username", SystemUser.class);
-        
-        return query
-                .setParameter("username", username)
-                .getSingleResult();
-    }
-    
-    @Override
-    public List<SystemUser> searchUsers(String searchTerm) {
-        TypedQuery<SystemUser> query = em.createQuery(
-                "SELECT u FROM SystemUser u WHERE LOWER(CONCAT(u.name, \" \", u.surname)) LIKE LOWER(:searchTerm)", SystemUser.class);
-        
-        String pattern = "%" + searchTerm + "%";
-        return query
-                .setParameter("searchTerm", pattern)
-                .getResultList();
+        return userDAO.getByUsername(username);
     }
     
     @Override
@@ -77,13 +56,7 @@ public class UserServiceBean implements UserService {
     
     @Override
     public boolean hasUser(String username) {
-        TypedQuery<SystemUser> query = em.createQuery(
-            "SELECT u FROM SystemUser u WHERE u.username = :username", SystemUser.class);
-        
-        return !query
-                .setParameter("username", username)
-                .getResultList()
-                .isEmpty();
+        return userDAO.getByUsername(username) != null;            
     }
     
     private void register(String username, String password, String name, String surname, String currency) {
@@ -93,8 +66,7 @@ public class UserServiceBean implements UserService {
         float initialBalance = getInitialBalance(currency);
         user.setBalanceAndCurrency(initialBalance, currency);
         
-        group.addUser(user);
-        em.persist(group);    
+        userDAO.insert(user, group);
     }
     
     private float getInitialBalance(String currency) {
@@ -110,8 +82,7 @@ public class UserServiceBean implements UserService {
         SystemUser admin = new SystemUser(username, getDigest(password));
         SystemUserGroup group = new SystemUserGroup(username, "ADMIN");
         
-        group.addUser(admin);
-        em.persist(group);
+        userDAO.insert(admin, group);
     }
     
     private String getDigest(String password) {

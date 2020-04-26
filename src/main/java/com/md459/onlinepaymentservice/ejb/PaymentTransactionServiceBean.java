@@ -5,6 +5,7 @@
  */
 package com.md459.onlinepaymentservice.ejb;
 
+import com.md459.onlinepaymentservice.dao.PaymentTransactionDAO;
 import com.md459.onlinepaymentservice.entity.PaymentTransaction;
 import com.md459.onlinepaymentservice.entity.SystemUser;
 import java.util.List;
@@ -13,9 +14,6 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
 /**
  *
@@ -23,9 +21,9 @@ import javax.persistence.TypedQuery;
  */
 @Stateless
 public class PaymentTransactionServiceBean implements PaymentTransactionService {
-    
-    @PersistenceContext
-    private EntityManager em;
+        
+    @EJB
+    PaymentTransactionDAO transDAO;
     
     @EJB
     UserService usrSrv;
@@ -37,21 +35,12 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     
     @Override
     public List<PaymentTransaction> getAllTransactions() {
-        TypedQuery<PaymentTransaction> query = em.createQuery(
-            "SELECT t FROM PaymentTransaction t", PaymentTransaction.class);
-        
-        return query.getResultList();
+        return transDAO.getAll();
     }
     
     @Override
     public List<PaymentTransaction> getTransactionHistory(SystemUser user) {
-        TypedQuery<PaymentTransaction> query = em.createQuery(
-            "SELECT t FROM PaymentTransaction t WHERE t.payer = :user OR t.payee = :user",
-                PaymentTransaction.class);
-        
-        return query
-                .setParameter("user", user)
-                .getResultList();
+        return transDAO.getHistory(user);
     }
     
     @Override
@@ -81,16 +70,12 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
         
         if(transaction.getStatus().equals("PENDING")) {
             transaction.setStatus("VOID");
+            
         }
     }
     
     private PaymentTransaction getTransaction(long id) {
-        TypedQuery<PaymentTransaction> query = em.createQuery(
-            "SELECT t FROM PaymentTransaction t WHERE t.id = :id", PaymentTransaction.class);
-        
-        return query
-                .setParameter("id", id)
-                .getSingleResult();
+        return transDAO.getById(id);
     }
     
     @Override
@@ -110,24 +95,17 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
         PaymentTransaction transaction = new PaymentTransaction(
                 payer, payee, transferAmount, description, payer.getCurrency());
         
-        em.persist(transaction);
+        transDAO.insert(transaction);
     }
     
     @Override
     public int getNumRequests(SystemUser user) {
-        return getPaymentRequests(user).size();
+        return transDAO.getPaymentRequests(user).size();
     }
     
     @Override
     public List<PaymentTransaction> getPaymentRequests(SystemUser user) {
-        TypedQuery<PaymentTransaction> query = em.createQuery(
-            "SELECT t FROM PaymentTransaction t WHERE t.payer = :user AND t.status = :status",
-                PaymentTransaction.class);
-        
-        return query
-                .setParameter("user", user)
-                .setParameter("status", "PENDING")
-                .getResultList();
+        return transDAO.getPaymentRequests(user);
     }
     
     @Override
@@ -155,7 +133,7 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
 
             transaction.setStatus("COMPLETE");
 
-            em.persist(transaction);
+            transDAO.insert(transaction);
         } else {
             throw new EJBException("Insufficient funds.");
         }

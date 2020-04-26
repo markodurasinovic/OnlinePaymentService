@@ -24,10 +24,6 @@ public class SearchBean {
     UserService usrSrv;
     
     private String searchTerm;
-    
-    public List<SystemUser> searchUsers() {
-        return usrSrv.searchUsers(searchTerm);
-    }
 
     public String getSearchTerm() {
         return searchTerm;

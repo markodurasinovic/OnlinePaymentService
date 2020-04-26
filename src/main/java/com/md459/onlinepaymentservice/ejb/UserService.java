@@ -20,7 +20,6 @@ public interface UserService {
     public List<SystemUser> getAllUsers();
     public boolean hasUser(String username);
     public SystemUser getUser(String username);
-    public List<SystemUser> searchUsers(String searchTerm);
     public void registerUser(String username, String password, String name, String surname, String currency) throws EJBException;
     public void registerAdmin(String username, String password) throws EJBException;
 }
