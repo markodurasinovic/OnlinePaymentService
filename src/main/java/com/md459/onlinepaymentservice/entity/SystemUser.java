@@ -5,6 +5,8 @@
  */
 package com.md459.onlinepaymentservice.entity;
 
+import com.md459.onlinepaymentservice.dto.PaymentTransactionTO;
+import com.md459.onlinepaymentservice.dto.SystemUserTO;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,11 +58,69 @@ public class SystemUser implements Serializable {
         this.balance = 0f;
     }
     
+    // User registration
     public SystemUser(String username, String userpassword, String name, String surname) {
         this.username = username;
         this.userpassword = userpassword;
         this.name = capitalise(name);
         this.surname = capitalise(surname);
+    }
+    
+    public SystemUserTO getUserData() {
+        return createSystemUserTO();
+    }
+    
+    private SystemUserTO createSystemUserTO() {
+        SystemUserTO user = new SystemUserTO();
+        user.id = id;
+        user.username = username;
+        user.userpassword = userpassword;
+        user.name = name;
+        user.surname = surname;
+        user.currency = currency;
+        user.balance = balance;
+        user.usergroup = usergroup;
+        user.fromTransactions = getTransactionTOs(fromTransactions);
+        user.toTransactions = getTransactionTOs(toTransactions);
+        
+        return user;
+    }
+    
+    private List<PaymentTransactionTO> getTransactionTOs(List<PaymentTransaction> transactions) {
+        List<PaymentTransactionTO> transactionTOs = new ArrayList<>();
+        transactions.forEach((t) -> {
+            transactionTOs.add(t.getTransactionData());
+        });
+        
+        return transactionTOs;
+    }
+    
+    public void setUserData(SystemUserTO updatedUser) {
+        mergeUserData(updatedUser);
+    }
+    
+    private void mergeUserData(SystemUserTO updatedUser) {
+        id = updatedUser.id;
+        username = updatedUser.username;
+        userpassword = updatedUser.userpassword;
+        name = updatedUser.name;
+        surname = updatedUser.surname;
+        currency = updatedUser.currency;
+        balance = updatedUser.balance;
+        usergroup = updatedUser.usergroup;
+        fromTransactions = updateTransactions(updatedUser.fromTransactions);
+        toTransactions = updateTransactions(updatedUser.toTransactions);
+    }
+    
+    private List<PaymentTransaction> updateTransactions(List<PaymentTransactionTO> transactionTOs) {
+        List<PaymentTransaction> updatedTransactions = new ArrayList<>();
+        transactionTOs.forEach((t) -> {
+            PaymentTransaction updatedTrans = new PaymentTransaction();
+            updatedTrans.setTransactionData(t);
+            updatedTransactions.add(updatedTrans);
+        });
+        
+        return updatedTransactions;
     }
 
     public String getUserpassword() {

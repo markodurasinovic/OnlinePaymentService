@@ -5,6 +5,7 @@
  */
 package com.md459.onlinepaymentservice.entity;
 
+import com.md459.onlinepaymentservice.dto.PaymentTransactionTO;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Entity;
@@ -49,7 +50,40 @@ public class PaymentTransaction implements Serializable {
         this.currency = currency;
         this.status = "PENDING";
     }
+    
+    public PaymentTransactionTO getTransactionData() {
+        return createPaymentTransactionTO();
+    }
 
+    private PaymentTransactionTO createPaymentTransactionTO() {
+        PaymentTransactionTO trans = new PaymentTransactionTO();
+        trans.id = id;
+        trans.payer = payer.getUserData();
+        trans.payee = payee.getUserData();
+        trans.amount = amount;
+        trans.currency = currency;
+        trans.status = status;
+        trans.description = description;
+        trans.creationTime = creationTime;
+        
+        return trans;
+    }
+    
+    public void setTransactionData(PaymentTransactionTO updatedTrans) {
+        mergeTransactionData(updatedTrans);
+    }
+    
+    private void mergeTransactionData(PaymentTransactionTO updatedTrans) {
+        id = updatedTrans.id;
+        payer.setUserData(updatedTrans.payer);
+        payee.setUserData(updatedTrans.payee);
+        amount = updatedTrans.amount;
+        currency = updatedTrans.currency;
+        status = updatedTrans.status;
+        description = updatedTrans.description;
+        creationTime = updatedTrans.creationTime;
+    }
+    
     public String getDescription() {
         return description;
     }

@@ -5,6 +5,8 @@
  */
 package com.md459.onlinepaymentservice.entity;
 
+import com.md459.onlinepaymentservice.dto.SystemUserGroupTO;
+import com.md459.onlinepaymentservice.dto.SystemUserTO;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,47 @@ public class SystemUserGroup implements Serializable {
     public SystemUserGroup(String username, String groupname) {
         this.username = username;
         this.groupname = groupname;
+    }
+    
+    public SystemUserGroupTO getGroupData() {
+        return createSystemUserGroupTO();
+    }
+    
+    private SystemUserGroupTO createSystemUserGroupTO() {
+        SystemUserGroupTO userGroup = new SystemUserGroupTO();
+        userGroup.id = id;
+        userGroup.groupname = groupname;
+        userGroup.users = getUserTOs();
+        userGroup.username = username;
+        
+        return userGroup;
+    }
+    
+    private List<SystemUserTO> getUserTOs() {
+        List<SystemUserTO> userTOs = new ArrayList<>();
+        users.forEach((u) -> {
+            userTOs.add(u.getUserData());
+        });
+        
+        return userTOs;
+    }
+    
+    public void updateGroupData(SystemUserGroupTO groupTO) {
+        id = groupTO.id;
+        groupname = groupTO.groupname;
+        users = updateUsers(groupTO.users);
+        username = groupTO.username;
+    }
+    
+    private List<SystemUser> updateUsers(List<SystemUserTO> userTOs) {
+        List<SystemUser> updatedUsers = new ArrayList<>();
+        userTOs.forEach((u) -> {
+            SystemUser updatedUser = new SystemUser();
+            updatedUser.setUserData(u);
+            updatedUsers.add(updatedUser);
+        });
+        
+        return updatedUsers;
     }
 
     @Override
