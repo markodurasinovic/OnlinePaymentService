@@ -11,7 +11,6 @@ import com.md459.onlinepaymentservice.ejb.PaymentTransactionService;
 import com.md459.onlinepaymentservice.ejb.UserService;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -36,20 +35,12 @@ public class UserBean implements Serializable {
     PaymentTransactionService txnSrv;
     
     private SystemUserTO user;
-    private SystemUserTO toUser;
     
-    /**
-     * TODO: REDUCE NUMBER OF QUERIES TO USER TABLE
-     * right now, one query is being made for each field displayed
-     * in view (name, surname, currency, balance).
-     * instead, on view-display, one query should run - retrieving
-     * all necessary information.
-     */
     public UserBean() {}
     
     @PostConstruct
     public void init() {
-        user = getUser();
+        updateUser();
     }
     
     public String logout() {
@@ -79,25 +70,7 @@ public class UserBean implements Serializable {
     }
 
     public SystemUserTO getUser() {
-        FacesContext fc = FacesContext.getCurrentInstance();
-        String username = fc.getExternalContext().getRemoteUser();
-                
-        if(username != null) user =  usrSrv.getUser(username);
-                
         return user;
-    }
-    
-    public SystemUserTO getToUser() {
-        FacesContext fc = FacesContext.getCurrentInstance();
-        Map<String, String> params = fc.getExternalContext().getRequestParameterMap();
-        
-        String username = params.get("toUser");
-        // if toUser f:param has been set, indicates that toUser for the
-        // session has changed. i.e. the current user has selected a new 
-        // user to pay/request a payment from
-        toUser = (username != null) ? usrSrv.getUser(username) : toUser;
-        
-        return toUser;
     }
     
     public String getName() {
@@ -113,6 +86,15 @@ public class UserBean implements Serializable {
     }
     
     public float getBalance() {
+        // Always display the updated user balance
+        updateUser();        
         return user.balance;
+    }
+    
+    private void updateUser() {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        String username = fc.getExternalContext().getRemoteUser();
+        
+        user = usrSrv.getUser(username);
     }
 }
