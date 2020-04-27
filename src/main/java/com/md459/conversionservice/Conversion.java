@@ -63,8 +63,23 @@ public class Conversion {
     @Path("{currency1}/{currency2}/{amount_of_currency1}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConvertedAmount(@PathParam("currency1")String c1, @PathParam("currency2")String c2, @PathParam("amount_of_currency1")String amount) {
-            float amountOfCurrency2 = Float.valueOf(amount) * getRate(c1, c2);
-            
-            return Response.ok(amountOfCurrency2).build();
+            if(!rates.containsKey(c1)) {
+                return Response.status(Response.Status.NOT_IMPLEMENTED)
+                        .entity("Conversion not implemented for currency " + c1)
+                        .build();
+            } else if(!rates.containsKey(c2)) {
+                return Response.status(Response.Status.NOT_IMPLEMENTED)
+                        .entity("Conversion not implemented for currency " + c2)
+                        .build();
+            } else {
+                try {
+                    float amountOfCurrency2 = Float.valueOf(amount) * getRate(c1, c2);
+                    return Response.ok(amountOfCurrency2).build();
+                } catch(NumberFormatException e) {
+                    return Response.status(Response.Status.BAD_REQUEST)
+                            .entity("Value: " + amount + " is invalid. Must be float.")
+                            .build();
+                }
+            }            
     }
 }
