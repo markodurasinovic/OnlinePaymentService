@@ -6,8 +6,9 @@
 package com.md459.onlinepaymentservice.ejb;
 
 import com.md459.onlinepaymentservice.dao.PaymentTransactionDAO;
-import com.md459.onlinepaymentservice.entity.PaymentTransaction;
-import com.md459.onlinepaymentservice.entity.SystemUser;
+import com.md459.onlinepaymentservice.dao.SystemUserDAO;
+import com.md459.onlinepaymentservice.dto.PaymentTransactionTO;
+import com.md459.onlinepaymentservice.dto.SystemUserTO;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
@@ -26,6 +27,9 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     PaymentTransactionDAO transDAO;
     
     @EJB
+    SystemUserDAO usrDAO;
+    
+    @EJB
     UserService usrSrv;
     
     @EJB
@@ -34,30 +38,34 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     public PaymentTransactionServiceBean() {}
     
     @Override
-    public List<PaymentTransaction> getAllTransactions() {
+    public List<PaymentTransactionTO> getAllTransactions() {
         return transDAO.getAll();
     }
     
     @Override
-    public List<PaymentTransaction> getTransactionHistory(SystemUser user) {
+    public List<PaymentTransactionTO> getTransactionHistory(SystemUserTO user) {
         return transDAO.getHistory(user);
     }
     
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void acceptRequest(long reqId) {
-        PaymentTransaction transaction = getTransaction(reqId);
+        PaymentTransactionTO transaction = getTransaction(reqId);
         
-        if(transaction.getStatus().equals("PENDING")) {
-            SystemUser fromUser = transaction.getPayer();
-            SystemUser toUser = transaction.getPayee();
+        if(transaction.status.equals("PENDING")) {
+            SystemUserTO requestee = transaction.payer;
+            SystemUserTO requester = transaction.payee;
 
-            float transferAmount = convert(toUser.getCurrency(), fromUser.getCurrency(), transaction.getAmount());
-            if(fromUser.getBalance() >= transferAmount) {
-                fromUser.setBalance(fromUser.getBalance() - transferAmount);
-                toUser.setBalance(toUser.getBalance() + transaction.getAmount());
+            float transferAmount = convert(requester.currency, requestee.currency, transaction.amount);
+            if(requestee.balance >= transferAmount) {
+                requestee.balance -= transferAmount;
+                requester.balance += transaction.amount;
 
-                transaction.setStatus("COMPLETE");
+                transaction.status = "COMPLETE";
+                
+                usrDAO.update(requestee);
+                usrDAO.update(requester);
+                transDAO.update(transaction);
             } else {
                 throw new EJBException("Insufficient funds.");
             }
@@ -66,15 +74,15 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     
     @Override
     public void rejectRequest(long reqId) {
-        PaymentTransaction transaction = getTransaction(reqId);
+        PaymentTransactionTO transaction = getTransaction(reqId);
         
-        if(transaction.getStatus().equals("PENDING")) {
-            transaction.setStatus("VOID");
-            
-        }
+        if(transaction.status.equals("PENDING")) {
+            transaction.status = "VOID";            
+            transDAO.update(transaction);
+        }        
     }
     
-    private PaymentTransaction getTransaction(long id) {
+    private PaymentTransactionTO getTransaction(long id) {
         return transDAO.getById(id);
     }
     
@@ -82,29 +90,29 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     public void requestPayment(String requester, String requestee, float amount, String description) {
         if(requester.equals(requestee)) throw new EJBException("User cannot request a payment from self.");
         
-        SystemUser payee = usrSrv.getUser(requester);
+        SystemUserTO payee = usrSrv.getUser(requester);
         // Exception thrown if no user is found with username requestee.
-        SystemUser payer;
+        SystemUserTO payer;
         if(usrSrv.hasUser(requestee)) {
             payer = usrSrv.getUser(requestee);
         } else {
             throw new EJBException("User does not exist.");
         }
         
-        float transferAmount = convert(payer.getCurrency(), payee.getCurrency(), amount);
-        PaymentTransaction transaction = new PaymentTransaction(
-                payer, payee, transferAmount, description, payer.getCurrency());
+        float transferAmount = convert(payer.currency, payee.currency, amount);
+        PaymentTransactionTO transaction = new PaymentTransactionTO(
+                payer, payee, transferAmount, description, payer.currency);
         
         transDAO.insert(transaction);
     }
     
     @Override
-    public int getNumRequests(SystemUser user) {
+    public int getNumRequests(SystemUserTO user) {
         return transDAO.getPaymentRequests(user).size();
     }
     
     @Override
-    public List<PaymentTransaction> getPaymentRequests(SystemUser user) {
+    public List<PaymentTransactionTO> getPaymentRequests(SystemUserTO user) {
         return transDAO.getPaymentRequests(user);
     }
     
@@ -113,26 +121,28 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     public void makePayment(String payerUsername, String payeeUsername, float amount, String description) {
         if(payerUsername.equals(payeeUsername)) throw new EJBException("User cannot make a payment to self.");
         
-        SystemUser payer = usrSrv.getUser(payerUsername);
+        SystemUserTO payer = usrSrv.getUser(payerUsername);
         // Exception thrown if no user is found with payeeUsername.
-        SystemUser payee;
+        SystemUserTO payee;
         if(usrSrv.hasUser(payeeUsername)) {
             payee = usrSrv.getUser(payeeUsername);
         } else {
             throw new EJBException("User does not exist.");
         }
         
-        float transferAmount = convert(payer.getCurrency(), payee.getCurrency(), amount);
-        PaymentTransaction transaction = new PaymentTransaction(
-                payer, payee, transferAmount, description, payer.getCurrency());
+        float transferAmount = convert(payer.currency, payee.currency, amount);
+        PaymentTransactionTO transaction = new PaymentTransactionTO(
+                payer, payee, transferAmount, description, payer.currency);
 
-        if(payer.getBalance() >= transferAmount) {
+        if(payer.balance >= transferAmount) {
 
-            payer.setBalance(payer.getBalance() - amount);
-            payee.setBalance(payee.getBalance() + transferAmount);
+            payer.balance -= amount;
+            payee.balance += transferAmount;
 
-            transaction.setStatus("COMPLETE");
+            transaction.status = "COMPLETE";
 
+            usrDAO.update(payer);
+            usrDAO.update(payee);
             transDAO.insert(transaction);
         } else {
             throw new EJBException("Insufficient funds.");

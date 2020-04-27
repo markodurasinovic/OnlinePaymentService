@@ -5,7 +5,6 @@
  */
 package com.md459.onlinepaymentservice.dto;
 
-import com.md459.onlinepaymentservice.entity.SystemUserGroup;
 import java.io.Serializable;
 import java.util.List;
 
@@ -21,9 +20,65 @@ public class SystemUserTO implements Serializable {
     public String surname;
     public String currency;
     public float balance;
-    public SystemUserGroup usergroup;
+    public SystemUserGroupTO usergroup;
     public List<PaymentTransactionTO> fromTransactions;
     public List<PaymentTransactionTO> toTransactions;
     
     public SystemUserTO() {}
+    
+    public SystemUserTO(String username, String userpassword, String name, String surname, float initialBalance, String currency) {
+        this.username = username;
+        this.userpassword = userpassword;
+        this.name = name;
+        this.surname = surname;
+        this.balance = initialBalance;
+        this.currency = currency;
+    }
+    
+    public SystemUserTO(String username, String userpassword) {
+        this.username = username;
+        this.userpassword = userpassword;
+    }
+    
+    // Getters so that DTO's fields can be used in JSF
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getUserpassword() {
+        return userpassword;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public float getBalance() {
+        return balance;
+    }
+
+    public SystemUserGroupTO getUsergroup() {
+        return usergroup;
+    }
+
+    public List<PaymentTransactionTO> getFromTransactions() {
+        return fromTransactions;
+    }
+
+    public List<PaymentTransactionTO> getToTransactions() {
+        return toTransactions;
+    }
 }

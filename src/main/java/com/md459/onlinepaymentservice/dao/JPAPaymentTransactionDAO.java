@@ -5,8 +5,11 @@
  */
 package com.md459.onlinepaymentservice.dao;
 
+import com.md459.onlinepaymentservice.dto.PaymentTransactionTO;
+import com.md459.onlinepaymentservice.dto.SystemUserTO;
 import com.md459.onlinepaymentservice.entity.PaymentTransaction;
 import com.md459.onlinepaymentservice.entity.SystemUser;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -24,37 +27,63 @@ public class JPAPaymentTransactionDAO implements PaymentTransactionDAO {
     private EntityManager em;
 
     @Override
-    public long insert(PaymentTransaction transaction) {
-        em.persist(transaction);
-        return transaction.getId();
+    public void insert(PaymentTransactionTO transaction) {
+        SystemUser payer = em.find(SystemUser.class, transaction.payer.id);
+        SystemUser payee = em.find(SystemUser.class, transaction.payee.id);
+        
+        PaymentTransaction trans = new PaymentTransaction(
+            transaction.amount, transaction.description, transaction.currency, transaction.status);
+        trans.setPayer(payer);
+        trans.setPayee(payee);
+        em.persist(trans);
     }
 
     @Override
-    public boolean update(PaymentTransaction transaction) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void update(PaymentTransactionTO transaction) {
+        PaymentTransaction trans = getTransactionById(transaction.id);        
+        trans.setTransactionData(transaction);
     }
 
     @Override
-    public List<PaymentTransaction> getAll() {
+    public List<PaymentTransactionTO> getAll() {
         TypedQuery<PaymentTransaction> query = em.createQuery(
             "SELECT t FROM PaymentTransaction t", PaymentTransaction.class);
         
-        return query.getResultList();
+        List<PaymentTransaction> transactions = query.getResultList();
+        
+        return getTransactionData(transactions);
     }
 
     @Override
-    public List<PaymentTransaction> getHistory(SystemUser user) {
+    public List<PaymentTransactionTO> getHistory(SystemUserTO user) {
         TypedQuery<PaymentTransaction> query = em.createQuery(
-            "SELECT t FROM PaymentTransaction t WHERE t.payer = :user OR t.payee = :user",
+            "SELECT t FROM PaymentTransaction t WHERE t.payer.id = :id OR t.payee.id = :id",
                 PaymentTransaction.class);
         
-        return query
-                .setParameter("user", user)
+        List<PaymentTransaction> transactions = query
+                .setParameter("id", user.id)
                 .getResultList();    
+        
+        return getTransactionData(transactions);
+    }
+    
+    private List<PaymentTransactionTO> getTransactionData(List<PaymentTransaction> transactions) {
+        List<PaymentTransactionTO> transactionTOs = new ArrayList<>();
+        transactions.forEach((t) -> {
+            transactionTOs.add(t.getTransactionData());
+        });
+        
+        return transactionTOs;
     }
 
     @Override
-    public PaymentTransaction getById(long id) {
+    public PaymentTransactionTO getById(long id) {
+        PaymentTransaction trans = getTransactionById(id);
+        
+        return trans.getTransactionData();
+    }
+    
+    private PaymentTransaction getTransactionById(long id) {
         TypedQuery<PaymentTransaction> query = em.createQuery(
             "SELECT t FROM PaymentTransaction t WHERE t.id = :id", PaymentTransaction.class);
         
@@ -64,15 +93,17 @@ public class JPAPaymentTransactionDAO implements PaymentTransactionDAO {
     }
 
     @Override
-    public List<PaymentTransaction> getPaymentRequests(SystemUser user) {
+    public List<PaymentTransactionTO> getPaymentRequests(SystemUserTO user) {
         TypedQuery<PaymentTransaction> query = em.createQuery(
-            "SELECT t FROM PaymentTransaction t WHERE t.payer = :user AND t.status = :status",
+            "SELECT t FROM PaymentTransaction t WHERE t.payer.id = :id AND t.status = :status",
                 PaymentTransaction.class);
         
-        return query
-                .setParameter("user", user)
+        List<PaymentTransaction> transactions = query
+                .setParameter("id", user.id)
                 .setParameter("status", "PENDING")
                 .getResultList();
+        
+        return getTransactionData(transactions);
     }
     
 }

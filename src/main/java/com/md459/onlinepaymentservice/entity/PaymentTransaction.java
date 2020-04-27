@@ -42,13 +42,11 @@ public class PaymentTransaction implements Serializable {
     
     public PaymentTransaction() {}
     
-    public PaymentTransaction(SystemUser payer, SystemUser payee, float amount, String description, String currency) {
-        this.payer = payer;
-        this.payee = payee;
+    public PaymentTransaction(float amount, String description, String currency, String status) {
         this.amount = amount;
         this.description = description;
         this.currency = currency;
-        this.status = "PENDING";
+        this.status = status != null ? status : "PENDING";
     }
     
     public PaymentTransactionTO getTransactionData() {
@@ -74,7 +72,6 @@ public class PaymentTransaction implements Serializable {
     }
     
     private void mergeTransactionData(PaymentTransactionTO updatedTrans) {
-        id = updatedTrans.id;
         payer.setUserData(updatedTrans.payer);
         payee.setUserData(updatedTrans.payee);
         amount = updatedTrans.amount;

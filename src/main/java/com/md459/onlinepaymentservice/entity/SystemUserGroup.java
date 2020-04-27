@@ -62,8 +62,7 @@ public class SystemUserGroup implements Serializable {
         return userTOs;
     }
     
-    public void updateGroupData(SystemUserGroupTO groupTO) {
-        id = groupTO.id;
+    public void setGroupData(SystemUserGroupTO groupTO) {
         groupname = groupTO.groupname;
         users = updateUsers(groupTO.users);
         username = groupTO.username;

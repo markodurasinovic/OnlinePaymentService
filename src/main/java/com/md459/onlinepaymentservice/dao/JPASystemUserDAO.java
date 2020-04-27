@@ -5,8 +5,10 @@
  */
 package com.md459.onlinepaymentservice.dao;
 
+import com.md459.onlinepaymentservice.dto.SystemUserTO;
 import com.md459.onlinepaymentservice.entity.SystemUser;
 import com.md459.onlinepaymentservice.entity.SystemUserGroup;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -24,55 +26,66 @@ public class JPASystemUserDAO implements SystemUserDAO {
     EntityManager em;
 
     @Override
-    public long insert(SystemUser user, SystemUserGroup group) {
-        group.addUser(user);
+    public void insert(SystemUserTO user, String groupName) {
+        SystemUser userEntity;
+        if(groupName.equals("ADMIN")) {
+            userEntity = new SystemUser(user.username, user.userpassword);
+        } else {
+            userEntity = new SystemUser(
+                user.username, user.userpassword, user.name, user.surname, user.balance, user.currency);
+        }
+        
+        SystemUserGroup group = new SystemUserGroup(user.username, groupName);
+        
+        em.persist(userEntity);
         em.persist(group);
-        
-        return user.getId();
-    }
-
-    @Override
-    public SystemUser getById(long id) {
-        TypedQuery<SystemUser> query = em.createQuery(
-                "SELECT u FROM SystemUser u WHERE u.id = :id", SystemUser.class);
-        
-        List<SystemUser> result = query
-                .setParameter("id", id)
-                .getResultList();
-        
-        if(result.isEmpty()) {
-            return null;
-        } else {
-            return result.get(0);
-        }
-    }
-
-    @Override
-    public SystemUser getByUsername(String username) {
-        TypedQuery<SystemUser> query = em.createQuery(
-                "SELECT u FROM SystemUser u WHERE u.username = :username", SystemUser.class);
-        
-        List<SystemUser> result = query
-                .setParameter("username", username)
-                .getResultList();
-        
-        if(result.isEmpty()) {
-            return null;
-        } else {
-            return result.get(0);
-        }
-    }
-
-    @Override
-    public boolean update(SystemUser user) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override
-    public List<SystemUser> getAllUsers() {
+    public void update(SystemUserTO user) {
+        SystemUser userEntity = em.find(SystemUser.class, user.id);
+        userEntity.setUserData(user);
+    }
+
+    @Override
+    public SystemUserTO getById(long id) {
+        SystemUser user = em.find(SystemUser.class, id);
+        
+        return user.getUserData();
+    }
+
+    @Override
+    public SystemUserTO getByUsername(String username) {
+        TypedQuery<SystemUser> query = em.createQuery(
+                "SELECT u FROM SystemUser u WHERE u.username = :username", SystemUser.class);
+        
+        List<SystemUser> users = query
+                .setParameter("username", username)
+                .getResultList();
+        
+        return getUserData(users);
+    }
+    
+    private SystemUserTO getUserData(List<SystemUser> users) {
+        if(users.isEmpty()) {
+            return null;
+        } else {
+            return users.get(0).getUserData();
+        }
+    }
+    
+    @Override
+    public List<SystemUserTO> getAllUsers() {
         TypedQuery<SystemUser> query = em.createQuery(
             "SELECT u FROM SystemUser u", SystemUser.class);
         
-        return query.getResultList();
+        List<SystemUser> users = query.getResultList();
+        
+        List<SystemUserTO> userTOs = new ArrayList<>();
+        users.forEach((u) -> {
+            userTOs.add(u.getUserData());
+        });
+        
+        return userTOs;
     }
 }

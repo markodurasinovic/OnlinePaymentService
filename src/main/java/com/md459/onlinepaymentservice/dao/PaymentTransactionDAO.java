@@ -5,8 +5,8 @@
  */
 package com.md459.onlinepaymentservice.dao;
 
-import com.md459.onlinepaymentservice.entity.PaymentTransaction;
-import com.md459.onlinepaymentservice.entity.SystemUser;
+import com.md459.onlinepaymentservice.dto.PaymentTransactionTO;
+import com.md459.onlinepaymentservice.dto.SystemUserTO;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -16,10 +16,10 @@ import javax.ejb.Local;
  */
 @Local
 public interface PaymentTransactionDAO {
-    public long insert(PaymentTransaction transaction);    
-    public boolean update(PaymentTransaction transaction);
-    public List<PaymentTransaction> getAll();
-    public List<PaymentTransaction> getHistory(SystemUser user);
-    public PaymentTransaction getById(long id);
-    public List<PaymentTransaction> getPaymentRequests(SystemUser user);
+    public void insert(PaymentTransactionTO transaction);    
+    public void update(PaymentTransactionTO transaction);
+    public List<PaymentTransactionTO> getAll();
+    public List<PaymentTransactionTO> getHistory(SystemUserTO user);
+    public PaymentTransactionTO getById(long id);
+    public List<PaymentTransactionTO> getPaymentRequests(SystemUserTO user);
 }

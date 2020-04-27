@@ -5,10 +5,10 @@
  */
 package com.md459.onlinepaymentservice.jsf;
 
+import com.md459.onlinepaymentservice.dto.PaymentTransactionTO;
+import com.md459.onlinepaymentservice.dto.SystemUserTO;
 import com.md459.onlinepaymentservice.ejb.PaymentTransactionService;
 import com.md459.onlinepaymentservice.ejb.UserService;
-import com.md459.onlinepaymentservice.entity.PaymentTransaction;
-import com.md459.onlinepaymentservice.entity.SystemUser;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -31,23 +31,23 @@ public class AdminBean implements Serializable {
     @EJB
     PaymentTransactionService txnSrv;
     
-    private SystemUser observedUser;
+    private SystemUserTO observedUser;
     
     public AdminBean() {}
     
-    public List<PaymentTransaction> getTransactionHistory(SystemUser user) {
+    public List<PaymentTransactionTO> getTransactionHistory(SystemUserTO user) {
         return txnSrv.getTransactionHistory(user);
     }
     
-    public List<PaymentTransaction> getAllTransactions() {
+    public List<PaymentTransactionTO> getAllTransactions() {
         return txnSrv.getAllTransactions();
     }
     
-    public List<SystemUser> getAllUsers() {
+    public List<SystemUserTO> getAllUsers() {
         return usrSrv.getAllUsers();
     }
 
-    public SystemUser getObservedUser() {
+    public SystemUserTO getObservedUser() {
         FacesContext fc = FacesContext.getCurrentInstance();
         Map<String, String> params = fc.getExternalContext().getRequestParameterMap();
         String username = params.get("username");
@@ -56,7 +56,7 @@ public class AdminBean implements Serializable {
         return observedUser;
     }
 
-    public void setObservedUser(SystemUser observedUser) {
+    public void setObservedUser(SystemUserTO observedUser) {
         this.observedUser = observedUser;
     }
 }

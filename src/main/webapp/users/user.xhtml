@@ -7,10 +7,10 @@
     </h:head>
     <h:body>
         
-        Hello #{userBean.user.name} #{userBean.user.surname}!
+        Hello #{userBean.name} #{userBean.surname}!
         <br/>
         
-        Current balance: #{userBean.user.currency}#{userBean.user.balance}
+        Current balance: #{userBean.currency}#{userBean.balance}
         <br/>
 
         <h:link value="Make a payment" outcome="makePayment"/>

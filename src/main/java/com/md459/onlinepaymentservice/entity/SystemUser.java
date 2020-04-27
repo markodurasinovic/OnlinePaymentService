@@ -59,11 +59,13 @@ public class SystemUser implements Serializable {
     }
     
     // User registration
-    public SystemUser(String username, String userpassword, String name, String surname) {
+    public SystemUser(String username, String userpassword, String name, String surname, float initialBalance, String currency) {
         this.username = username;
         this.userpassword = userpassword;
         this.name = capitalise(name);
         this.surname = capitalise(surname);
+        this.balance = initialBalance;
+        this.currency = currency;
     }
     
     public SystemUserTO getUserData() {
@@ -79,7 +81,6 @@ public class SystemUser implements Serializable {
         user.surname = surname;
         user.currency = currency;
         user.balance = balance;
-        user.usergroup = usergroup;
         user.fromTransactions = getTransactionTOs(fromTransactions);
         user.toTransactions = getTransactionTOs(toTransactions);
         
@@ -100,14 +101,12 @@ public class SystemUser implements Serializable {
     }
     
     private void mergeUserData(SystemUserTO updatedUser) {
-        id = updatedUser.id;
         username = updatedUser.username;
         userpassword = updatedUser.userpassword;
         name = updatedUser.name;
         surname = updatedUser.surname;
         currency = updatedUser.currency;
         balance = updatedUser.balance;
-        usergroup = updatedUser.usergroup;
         fromTransactions = updateTransactions(updatedUser.fromTransactions);
         toTransactions = updateTransactions(updatedUser.toTransactions);
     }

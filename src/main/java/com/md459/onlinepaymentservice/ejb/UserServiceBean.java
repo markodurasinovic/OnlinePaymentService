@@ -6,6 +6,7 @@
 package com.md459.onlinepaymentservice.ejb;
 
 import com.md459.onlinepaymentservice.dao.SystemUserDAO;
+import com.md459.onlinepaymentservice.dto.SystemUserTO;
 import com.md459.onlinepaymentservice.entity.SystemUser;
 import com.md459.onlinepaymentservice.entity.SystemUserGroup;
 import java.io.UnsupportedEncodingException;
@@ -36,12 +37,12 @@ public class UserServiceBean implements UserService {
     public UserServiceBean() {}
     
     @Override
-    public List<SystemUser> getAllUsers() {
+    public List<SystemUserTO> getAllUsers() {
         return userDAO.getAllUsers();
     }
     
     @Override
-    public SystemUser getUser(String username) {
+    public SystemUserTO getUser(String username) {
         return userDAO.getByUsername(username);
     }
     
@@ -51,22 +52,11 @@ public class UserServiceBean implements UserService {
          if(hasUser(username))
              throw new EJBException("User with this username already exists.");
          
-        register(username, password, name, surname, currency); 
-    }
-    
-    @Override
-    public boolean hasUser(String username) {
-        return userDAO.getByUsername(username) != null;            
-    }
-    
-    private void register(String username, String password, String name, String surname, String currency) {
-        SystemUser user = new SystemUser(username, getDigest(password), name, surname);
-        SystemUserGroup group = new SystemUserGroup(username, "USER");
-        
         float initialBalance = getInitialBalance(currency);
-        user.setBalanceAndCurrency(initialBalance, currency);
+        SystemUserTO user = new SystemUserTO(
+                username, getDigest(password), name, surname, initialBalance, currency);
         
-        userDAO.insert(user, group);
+        userDAO.insert(user, "USER");
     }
     
     private float getInitialBalance(String currency) {
@@ -79,10 +69,14 @@ public class UserServiceBean implements UserService {
         if(hasUser(username)) 
             throw new EJBException("Admin with this username already exists.");
         
-        SystemUser admin = new SystemUser(username, getDigest(password));
-        SystemUserGroup group = new SystemUserGroup(username, "ADMIN");
+        SystemUserTO admin = new SystemUserTO(username, getDigest(password));
         
-        userDAO.insert(admin, group);
+        userDAO.insert(admin, "ADMIN");
+    }
+    
+    @Override
+    public boolean hasUser(String username) {
+        return userDAO.getByUsername(username) != null;            
     }
     
     private String getDigest(String password) {

@@ -19,4 +19,22 @@ public class SystemUserGroupTO implements Serializable {
     public String username;
     
     public SystemUserGroupTO() {}
+    
+    // Getters so that DTO's fields can be used in JSF
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getGroupname() {
+        return groupname;
+    }
+
+    public List<SystemUserTO> getUsers() {
+        return users;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 }

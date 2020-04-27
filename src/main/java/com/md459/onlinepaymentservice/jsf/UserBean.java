@@ -5,6 +5,8 @@
  */
 package com.md459.onlinepaymentservice.jsf;
 
+import com.md459.onlinepaymentservice.dto.PaymentTransactionTO;
+import com.md459.onlinepaymentservice.dto.SystemUserTO;
 import com.md459.onlinepaymentservice.ejb.PaymentTransactionService;
 import com.md459.onlinepaymentservice.ejb.UserService;
 import com.md459.onlinepaymentservice.entity.PaymentTransaction;
@@ -35,8 +37,8 @@ public class UserBean implements Serializable {
     @EJB
     PaymentTransactionService txnSrv;
     
-    private SystemUser user;
-    private SystemUser toUser;
+    private SystemUserTO user;
+    private SystemUserTO toUser;
     
     /**
      * TODO: REDUCE NUMBER OF QUERIES TO USER TABLE
@@ -57,6 +59,7 @@ public class UserBean implements Serializable {
         HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
         try {
             request.logout();
+            request.getSession().invalidate();
             fc.addMessage(null, new FacesMessage("User is logged out."));
             return "index";
         } catch (ServletException e) {
@@ -65,11 +68,11 @@ public class UserBean implements Serializable {
         }
     }
     
-    public List<PaymentTransaction> getTransactionHistory() {
+    public List<PaymentTransactionTO> getTransactionHistory() {
         return txnSrv.getTransactionHistory(user);
     }
     
-    public List<PaymentTransaction> getPaymentRequests() {
+    public List<PaymentTransactionTO> getPaymentRequests() {
         return txnSrv.getPaymentRequests(user);
     }
     
@@ -77,7 +80,7 @@ public class UserBean implements Serializable {
         return txnSrv.getNumRequests(user);
     }
 
-    public SystemUser getUser() {
+    public SystemUserTO getUser() {
         FacesContext fc = FacesContext.getCurrentInstance();
         String username = fc.getExternalContext().getRemoteUser();
                 
@@ -86,7 +89,7 @@ public class UserBean implements Serializable {
         return user;
     }
     
-    public SystemUser getToUser() {
+    public SystemUserTO getToUser() {
         FacesContext fc = FacesContext.getCurrentInstance();
         Map<String, String> params = fc.getExternalContext().getRequestParameterMap();
         
@@ -100,18 +103,18 @@ public class UserBean implements Serializable {
     }
     
     public String getName() {
-        return user.getName();
+        return user.name;
     }
     
     public String getSurname() {
-        return user.getSurname();
+        return user.surname;
     }
     
     public String getCurrency() {
-        return user.getCurrency();
+        return user.currency;
     }
     
     public float getBalance() {
-        return user.getBalance();
+        return user.balance;
     }
 }

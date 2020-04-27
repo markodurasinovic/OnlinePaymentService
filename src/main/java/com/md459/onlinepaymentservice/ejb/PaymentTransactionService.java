@@ -5,8 +5,8 @@
  */
 package com.md459.onlinepaymentservice.ejb;
 
-import com.md459.onlinepaymentservice.entity.PaymentTransaction;
-import com.md459.onlinepaymentservice.entity.SystemUser;
+import com.md459.onlinepaymentservice.dto.PaymentTransactionTO;
+import com.md459.onlinepaymentservice.dto.SystemUserTO;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -17,12 +17,12 @@ import javax.ejb.Local;
 @Local
 public interface PaymentTransactionService {
     
-    public List<PaymentTransaction> getAllTransactions();
+    public List<PaymentTransactionTO> getAllTransactions();
     public void acceptRequest(long reqId);
     public void rejectRequest(long reqId);
-    public List<PaymentTransaction> getTransactionHistory(SystemUser user);
+    public List<PaymentTransactionTO> getTransactionHistory(SystemUserTO user);
     public void requestPayment(String requester, String requestee, float amount, String description);
-    public int getNumRequests(SystemUser user);
-    public List<PaymentTransaction> getPaymentRequests(SystemUser user);
+    public int getNumRequests(SystemUserTO user);
+    public List<PaymentTransactionTO> getPaymentRequests(SystemUserTO user);
     public void makePayment(String payer, String payee, float amount, String description);
 }
