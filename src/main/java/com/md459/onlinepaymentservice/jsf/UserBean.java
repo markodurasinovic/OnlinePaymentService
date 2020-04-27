@@ -9,8 +9,6 @@ import com.md459.onlinepaymentservice.dto.PaymentTransactionTO;
 import com.md459.onlinepaymentservice.dto.SystemUserTO;
 import com.md459.onlinepaymentservice.ejb.PaymentTransactionService;
 import com.md459.onlinepaymentservice.ejb.UserService;
-import com.md459.onlinepaymentservice.entity.PaymentTransaction;
-import com.md459.onlinepaymentservice.entity.SystemUser;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
