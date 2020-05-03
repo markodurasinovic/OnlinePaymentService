@@ -8,22 +8,22 @@
     <h:body>
         
         Hello #{userBean.name} #{userBean.surname}!
-        <br/>
+        <br/><br/>
         
         Current balance: #{userBean.currency}#{userBean.balance}
-        <br/>
+        <br/><br/>
 
         <h:link value="Make a payment" outcome="makePayment"/>
-        <br/>
+        <br/><br/>
         
         <h:link value="Request a payment" outcome="requestPayment"/>
-        <br/>
+        <br/><br/>
         
         <h:link value="View transactions" outcome="transactions"/>
-        <br/>
+        <br/><br/>
         
         <h:link value="You have #{userBean.numRequests} payment requests" outcome="requests"/>
-        <br/>
+        <br/><br/>
         
         <h:form>
             <h:commandButton value="Logout" action="#{userBean.logout()}"/>

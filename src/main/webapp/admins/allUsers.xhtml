@@ -7,8 +7,8 @@
         <title>User Search Results</title>
     </h:head>
     <h:body>
-        The following users match your search query:
-        <br/>
+        This is a list of all the registered users:
+        <br/><br/>
         
         <h:dataTable value="#{adminBean.getAllUsers()}" var="user">
             
@@ -38,7 +38,7 @@
             </h:column>
             
             <h:column>
-                <h:button value="View transactions" rendered="#{user.usergroup.groupname ne 'ADMIN'}" outcome="userTransactions">
+                <h:button value="View user's transactions" rendered="#{user.usergroup.groupname ne 'ADMIN'}" outcome="userTransactions">
                     <f:param name="username" value="#{user.username}"/>
                 </h:button>
             </h:column>

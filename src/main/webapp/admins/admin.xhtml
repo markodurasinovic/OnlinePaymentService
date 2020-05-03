@@ -7,16 +7,16 @@
     </h:head>
     <h:body>
         Hello #{userBean.user.username}
-        <br/>
+        <br/><br/>
         
         <h:link value="Register a new admin" outcome="registerAdmin"/>
-        <br/>
+        <br/><br/>
         
         <h:link value="View all users" outcome="allUsers"/>
-        <br/>
+        <br/><br/>
         
         <h:link value="View all transactions" outcome="allTransactions"/>
-        <br/>
+        <br/><br/>
         
         <h:form>
             <h:commandButton value="Logout" action="#{userBean.logout()}"/>

@@ -8,7 +8,7 @@
     </h:head>
     <h:body>
         Transactions for user: #{adminBean.observedUser.username}
-        <br/>
+        <br/><br/>
         
         <h:dataTable value="#{adminBean.getTransactionHistory(adminBean.observedUser)}" var="txn">
             <h:column>
