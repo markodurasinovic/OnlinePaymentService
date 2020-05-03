@@ -35,6 +35,8 @@ public class JPAPaymentTransactionDAO implements PaymentTransactionDAO {
             transaction.amount, transaction.description, transaction.currency, transaction.status);
         trans.setPayer(payer);
         trans.setPayee(payee);
+        trans.setCreationTime(transaction.creationTime);
+        
         em.persist(trans);
     }
 

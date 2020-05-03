@@ -7,8 +7,6 @@ package com.md459.onlinepaymentservice.ejb;
 
 import com.md459.onlinepaymentservice.dao.SystemUserDAO;
 import com.md459.onlinepaymentservice.dto.SystemUserTO;
-import com.md459.onlinepaymentservice.entity.SystemUser;
-import com.md459.onlinepaymentservice.entity.SystemUserGroup;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

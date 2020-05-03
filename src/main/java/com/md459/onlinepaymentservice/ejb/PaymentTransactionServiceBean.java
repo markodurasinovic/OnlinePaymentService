@@ -5,6 +5,7 @@
  */
 package com.md459.onlinepaymentservice.ejb;
 
+import com.md459.onlinepaymentservice.clients.TimestampManager;
 import com.md459.onlinepaymentservice.dao.PaymentTransactionDAO;
 import com.md459.onlinepaymentservice.dao.SystemUserDAO;
 import com.md459.onlinepaymentservice.dto.PaymentTransactionTO;
@@ -34,6 +35,9 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     
     @EJB
     ConversionManager convMan;
+    
+    @EJB
+    TimestampManager tspMan;
     
     public PaymentTransactionServiceBean() {}
     
@@ -102,6 +106,11 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
         float transferAmount = convert(payer.currency, payee.currency, amount);
         PaymentTransactionTO transaction = new PaymentTransactionTO(
                 payer, payee, transferAmount, description, payer.currency);
+        try {
+            transaction.creationTime = tspMan.getTimestamp();
+        } catch(Exception e) {
+            throw new EJBException("Timestamp service failed.");
+        }
         
         transDAO.insert(transaction);
     }
@@ -140,7 +149,13 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
             payee.balance += transferAmount;
 
             transaction.status = "COMPLETE";
-
+            
+            try {
+                transaction.creationTime = tspMan.getTimestamp();
+            } catch(Exception e) {
+                throw new EJBException("Timestamp service failed.");
+            }
+            
             usrDAO.update(payer);
             usrDAO.update(payee);
             transDAO.insert(transaction);
