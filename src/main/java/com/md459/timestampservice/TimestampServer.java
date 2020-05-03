@@ -6,6 +6,7 @@
 package com.md459.timestampservice;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import org.apache.thrift.server.TServer.Args;
@@ -43,8 +44,6 @@ public class TimestampServer {
             };
             
             new Thread(simple).start();
-            System.in.read();
-            server.stop();
         } catch(Exception e) {
             System.err.println(e);
         }
@@ -60,5 +59,10 @@ public class TimestampServer {
         } catch(Exception e) {
             System.err.println(e);
         }
+    }
+    
+    @PreDestroy
+    public void stop() {
+        server.stop();
     }
 }

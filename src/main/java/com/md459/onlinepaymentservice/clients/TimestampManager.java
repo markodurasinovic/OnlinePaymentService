@@ -5,6 +5,8 @@
  */
 package com.md459.onlinepaymentservice.clients;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.ejb.Singleton;
 import org.apache.thrift.TException;
@@ -20,7 +22,10 @@ import org.apache.thrift.transport.TTransport;
 @Singleton
 public class TimestampManager {
     
-    public Date getTimestamp() throws TException {
+    SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+    
+    public Date getTimestamp() throws TException, ParseException {
+        
         Date timestamp;
         
         try {
@@ -32,8 +37,7 @@ public class TimestampManager {
             TProtocol protocol = new TBinaryProtocol(transport);
             TimestampService.Client client = new TimestampService.Client(protocol);
             
-            timestamp = new Date(client.timestamp());
-            
+            timestamp = sdf.parse(client.timestamp());
             transport.close();
             
             return timestamp;
@@ -41,5 +45,4 @@ public class TimestampManager {
             throw e;
         }
     }
-    
 }

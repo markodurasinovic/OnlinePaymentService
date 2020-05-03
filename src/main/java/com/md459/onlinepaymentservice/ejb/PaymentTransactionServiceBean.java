@@ -109,6 +109,7 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
         try {
             transaction.creationTime = tspMan.getTimestamp();
         } catch(Exception e) {
+            System.err.println(e);
             throw new EJBException("Timestamp service failed.");
         }
         
