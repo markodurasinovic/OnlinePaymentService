@@ -2,7 +2,9 @@ package com.md459.conversionservice;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -13,20 +15,24 @@ import javax.ws.rs.core.Response;
 /**
  * RESTful Conversion service provided at /services/conversion
  */
+@Startup
 @Singleton
 @Path("conversion")
 public class Conversion {    
     
     Map<String, Map<String, Float>> rates;
     
-    public Conversion() {
+    public Conversion() {}
+    
+    @PostConstruct
+    public void init() {
         rates = new HashMap<>();
         
         addRate("GBP", "USD", 1.24f);
         addRate("GBP", "EUR", 1.14f);
-        addRate("EUR", "USD", 1.09f);        
+        addRate("EUR", "USD", 1.09f);  
     }
-    
+        
     /**
      * Adds exchange rates from currency1 to currency2, and from currency2
      * to currency1, based on the rate provided to the method.
