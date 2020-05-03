@@ -1,19 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.md459.timestampservice;
 
 import java.util.Date;
 import org.apache.thrift.TException;
 
 /**
- *
- * @author marko
+ * Provides timestamping functionality.
  */
 public class TimestampHandler implements TimestampService.Iface {
 
+    /**
+     * Returns the current timestamp as string.
+     * 
+     * @return - A string representing the current date and time.
+     * @throws TException 
+     */
     @Override
     public String timestamp() throws TException {
         return new Date().toString();

@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.md459.onlinepaymentservice.ejb;
+package com.md459.onlinepaymentservice.clients;
 
 import javax.ejb.Singleton;
 import javax.ws.rs.client.Client;
@@ -11,19 +6,27 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 
 /**
- *
- * @author marko
- */
+* ConversionClient sends requests to the Conversion service's API.
+*/
 @Singleton
-public class ConversionManager {
-    
-    private Client client;
+public class ConversionClient {    
+        
+    private final Client client;
     private final String baseUri = "http://localhost:10000/webapps2020/services/conversion";
     
-    public ConversionManager() {
+    public ConversionClient() {
         client = ClientBuilder.newClient();
     }
     
+    /**
+     * Send a request to convert amount from currency1 to currency2.
+     * Extracts the float value from the response and returns it.
+     * 
+     * @param currency1 - Currency to convert from.
+     * @param currency2 - Currency to convert to.
+     * @param amount - Amount to convert
+     * @return Converted amount.
+     */
     public float getConvertedAmount(String currency1, String currency2, float amount) {
         float convertedAmount = client.target(baseUri)
                     .path(currency1)

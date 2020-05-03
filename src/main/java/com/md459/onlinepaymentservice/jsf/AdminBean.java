@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.md459.onlinepaymentservice.jsf;
 
 import com.md459.onlinepaymentservice.dto.PaymentTransactionTO;
@@ -13,16 +8,15 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 /**
- *
- * @author marko
+ * AdminBean provides functionality unique to ADMIN SystemUsers.
  */
 @Named
-@SessionScoped
+@RequestScoped
 public class AdminBean implements Serializable {
     
     @EJB
@@ -47,6 +41,12 @@ public class AdminBean implements Serializable {
         return usrSrv.getAllUsers();
     }
 
+    /**
+     * Get the username for the currently selected user and set observedUser.
+     * This is used when viewing a particular user's payment history.
+     * 
+     * @return - A SystemUser DTO.
+     */
     public SystemUserTO getObservedUser() {
         FacesContext fc = FacesContext.getCurrentInstance();
         Map<String, String> params = fc.getExternalContext().getRequestParameterMap();
@@ -56,7 +56,4 @@ public class AdminBean implements Serializable {
         return observedUser;
     }
 
-    public void setObservedUser(SystemUserTO observedUser) {
-        this.observedUser = observedUser;
-    }
 }

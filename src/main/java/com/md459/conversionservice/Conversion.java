@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.md459.conversionservice;
 
 import java.util.HashMap;
@@ -16,12 +11,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- *
- * @author marko
+ * RESTful Conversion service provided at /services/conversion
  */
 @Singleton
 @Path("conversion")
-public class Conversion {
+public class Conversion {    
     
     Map<String, Map<String, Float>> rates;
     
@@ -59,6 +53,14 @@ public class Conversion {
         return rate;
     }
     
+    /**
+     * Convert amount from c1 to c2, based on values in rates.
+     * 
+     * @param c1
+     * @param c2
+     * @param amount
+     * @return 
+     */
     @GET
     @Path("{currency1}/{currency2}/{amount_of_currency1}")
     @Produces(MediaType.APPLICATION_JSON)

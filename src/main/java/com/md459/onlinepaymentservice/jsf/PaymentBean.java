@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.md459.onlinepaymentservice.jsf;
 
 import com.md459.onlinepaymentservice.ejb.PaymentTransactionService;
@@ -14,8 +9,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 /**
- *
- * @author marko
+ * PaymentBean provides functionality in relation to payments and requests.
  */
 @Named
 @RequestScoped

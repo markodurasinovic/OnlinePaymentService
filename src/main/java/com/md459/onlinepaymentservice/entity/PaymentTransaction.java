@@ -1,13 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.md459.onlinepaymentservice.entity;
 
 import com.md459.onlinepaymentservice.dto.PaymentTransactionTO;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,10 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-/**
- *
- * @author marko
- */
 @Entity
 public class PaymentTransaction implements Serializable {
 
@@ -49,6 +41,11 @@ public class PaymentTransaction implements Serializable {
         this.status = status != null ? status : "PENDING";
     }
     
+    /**
+     * Create a DTO with this PaymentTransaction entity's values.
+     * 
+     * @return - A PaymentTransaction DTO.
+     */
     public PaymentTransactionTO getTransactionData() {
         return createPaymentTransactionTO();
     }
@@ -67,6 +64,12 @@ public class PaymentTransaction implements Serializable {
         return trans;
     }
     
+    /**
+     * Update this PaymentTransaction entity with updatedTrans DTO's 
+     * values.
+     * 
+     * @param updatedTrans - A PaymentTransaction DTO.
+     */
     public void setTransactionData(PaymentTransactionTO updatedTrans) {
         mergeTransactionData(updatedTrans);
     }
@@ -79,6 +82,59 @@ public class PaymentTransaction implements Serializable {
         status = updatedTrans.status;
         description = updatedTrans.description;
         creationTime = updatedTrans.creationTime;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(this.id);
+        hash = 59 * hash + Objects.hashCode(this.payer);
+        hash = 59 * hash + Objects.hashCode(this.payee);
+        hash = 59 * hash + Float.floatToIntBits(this.amount);
+        hash = 59 * hash + Objects.hashCode(this.currency);
+        hash = 59 * hash + Objects.hashCode(this.status);
+        hash = 59 * hash + Objects.hashCode(this.description);
+        hash = 59 * hash + Objects.hashCode(this.creationTime);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PaymentTransaction other = (PaymentTransaction) obj;
+        if (Float.floatToIntBits(this.amount) != Float.floatToIntBits(other.amount)) {
+            return false;
+        }
+        if (!Objects.equals(this.currency, other.currency)) {
+            return false;
+        }
+        if (!Objects.equals(this.status, other.status)) {
+            return false;
+        }
+        if (!Objects.equals(this.description, other.description)) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.payer, other.payer)) {
+            return false;
+        }
+        if (!Objects.equals(this.payee, other.payee)) {
+            return false;
+        }
+        if (!Objects.equals(this.creationTime, other.creationTime)) {
+            return false;
+        }
+        return true;
     }
     
     public String getDescription() {

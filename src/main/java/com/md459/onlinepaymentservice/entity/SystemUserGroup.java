@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.md459.onlinepaymentservice.entity;
 
 import com.md459.onlinepaymentservice.dto.SystemUserGroupTO;
@@ -14,10 +9,6 @@ import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-/**
- *
- * @author marko
- */
 @Entity
 public class SystemUserGroup implements Serializable {
     
@@ -82,10 +73,10 @@ public class SystemUserGroup implements Serializable {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 37 * hash + Objects.hashCode(this.id);
-        hash = 37 * hash + Objects.hashCode(this.groupname);
-        hash = 37 * hash + Objects.hashCode(this.users);
-        hash = 37 * hash + Objects.hashCode(this.username);
+        hash = 41 * hash + Objects.hashCode(this.id);
+        hash = 41 * hash + Objects.hashCode(this.groupname);
+        hash = 41 * hash + Objects.hashCode(this.users);
+        hash = 41 * hash + Objects.hashCode(this.username);
         return hash;
     }
 
@@ -101,19 +92,22 @@ public class SystemUserGroup implements Serializable {
             return false;
         }
         final SystemUserGroup other = (SystemUserGroup) obj;
-        if (!Objects.equals(this.users, other.users)) {
+        if (!Objects.equals(this.groupname, other.groupname)) {
             return false;
         }
-        if (!Objects.equals(this.groupname, other.groupname)) {
+        if (!Objects.equals(this.username, other.username)) {
             return false;
         }
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
+        if (!Objects.equals(this.users, other.users)) {
+            return false;
+        }
         return true;
     }
 
-    public Long getId() {
+   public Long getId() {
         return id;
     }
 

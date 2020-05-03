@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.md459.onlinepaymentservice.jsf;
 
 import javax.faces.component.UIComponent;
@@ -11,8 +6,9 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
 /**
- *
- * @author marko
+ * Converts values to lower-case. Used when logging in as usernames are
+ * stored in lowercase in the DB.
+ * 
  */
 @FacesConverter("toLowerCaseConverter")
 public class ToLowerCaseConverter implements Converter {

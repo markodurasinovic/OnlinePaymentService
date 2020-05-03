@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.md459.onlinepaymentservice.jsf;
 
 import com.md459.onlinepaymentservice.dto.PaymentTransactionTO;
@@ -21,8 +16,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- *
- * @author marko
+ * UserBean is a SessionScoped bean, storing information about the 
+ * currently logged-in user. Also provides logout functionality.
  */
 @Named
 @SessionScoped

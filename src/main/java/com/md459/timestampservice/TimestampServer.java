@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.md459.timestampservice;
 
 import javax.annotation.PostConstruct;
@@ -14,10 +9,11 @@ import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.transport.TServerSocket;
 import org.apache.thrift.transport.TServerTransport;
+import org.apache.thrift.transport.TTransportException;
 
 /**
- *
- * @author marko
+ * TimestampServer running on port 10001.
+ * 
  */
 @Startup
 @Singleton
@@ -56,7 +52,7 @@ public class TimestampServer {
             server = new TSimpleServer(new Args(serverTransport).processor(processor));
             
             server.serve();
-        } catch(Exception e) {
+        } catch(TTransportException e) {
             System.err.println(e);
         }
     }

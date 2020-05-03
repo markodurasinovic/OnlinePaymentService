@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.md459.onlinepaymentservice.clients;
 
 import java.text.ParseException;
@@ -16,14 +11,24 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 
 /**
- *
- * @author marko
- */
+* TimestampClient sends requests to the timestamp thrift service.
+*/
 @Singleton
-public class TimestampManager {
+public class TimestampClient {      
     
     SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
     
+    /**
+     * Sends a request to TimestampService server, retrieving the current 
+     * date and time (timestamp) in String format. This timestamp is parsed
+     * and returned as a Date.
+     * 
+     * @return - A timestamp.
+     * @throws TException - In case of a failed thrift request.
+     * @throws ParseException - In case of the SimpleDateFormat parser being 
+     *                          unable to provide the Date String
+     *                          provided by the server.
+     */
     public Date getTimestamp() throws TException, ParseException {
         
         Date timestamp;
@@ -41,7 +46,7 @@ public class TimestampManager {
             transport.close();
             
             return timestamp;
-        } catch(TException e) {
+        } catch(TException | ParseException e) {
             throw e;
         }
     }

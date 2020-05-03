@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.md459.onlinepaymentservice.ejb;
 
+import com.md459.onlinepaymentservice.clients.ConversionClient;
 import com.md459.onlinepaymentservice.dao.SystemUserDAO;
 import com.md459.onlinepaymentservice.dto.SystemUserTO;
 import java.io.UnsupportedEncodingException;
@@ -13,6 +9,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
@@ -20,30 +18,54 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 /**
- *
- * @author marko
+ * A Stateless EJB implementation of the UserService interface.
+ * It provides functionality regarding SystemUsers, including registration of
+ * users and admins, and retrieval of users.
  */
 @Stateless
+@DeclareRoles({"USER", "ADMIN"})
 public class UserServiceBean implements UserService {
     
     @EJB
     SystemUserDAO userDAO;
     
     @EJB
-    ConversionManager convMan;
+    ConversionClient conversion;
     
     public UserServiceBean() {}
     
+    /**
+     * Get DAOs for each SystemUser of SystemUserGroup USER.
+     * 
+     * @return - A list of SystemUser DAOs.
+     */
     @Override
+    @RolesAllowed("ADMIN")
     public List<SystemUserTO> getAllUsers() {
         return userDAO.getAllUsers();
     }
     
+    /**
+     * Get a DAO for SystemUser with username.
+     * 
+     * @param username - A SystemUser's username.
+     * @return - A list of SystemUser DAOs.
+     */
     @Override
+    @RolesAllowed({"USER", "ADMIN"})
     public SystemUserTO getUser(String username) {
         return userDAO.getByUsername(username);
     }
     
+    /**
+     * Register a USER if a SystemUser with username doesn't already exist.
+     * 
+     * @param username
+     * @param password
+     * @param name
+     * @param surname
+     * @param currency 
+     */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void registerUser(String username, String password, String name, String surname, String currency) {
@@ -58,10 +80,17 @@ public class UserServiceBean implements UserService {
     }
     
     private float getInitialBalance(String currency) {
-        return convMan.getConvertedAmount("GBP", currency, 1000.00f);
+        return conversion.getConvertedAmount("GBP", currency, 1000.00f);
     }
     
+    /**
+     * Register an ADMIN if a SystemUser with username doesn't already exist.
+     * 
+     * @param username
+     * @param password 
+     */
     @Override
+//    @RolesAllowed("ADMIN")
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void registerAdmin(String username, String password) {
         if(hasUser(username)) 

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.md459.onlinepaymentservice.entity;
 
 import com.md459.onlinepaymentservice.dto.PaymentTransactionTO;
@@ -14,10 +9,6 @@ import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-/**
- *
- * @author marko
- */
 @Entity
 public class SystemUser implements Serializable {
 
@@ -68,6 +59,11 @@ public class SystemUser implements Serializable {
         this.currency = currency;
     }
     
+    /**
+     * Create a DTO with this SystemUser entity's values.
+     * 
+     * @return - A SystemUser DTO.
+     */
     public SystemUserTO getUserData() {
         return createSystemUserTO();
     }
@@ -96,6 +92,12 @@ public class SystemUser implements Serializable {
         return transactionTOs;
     }
     
+    /**
+     * Update this SystemUser entity with updatedTrans DTO's 
+     * values.
+     * 
+     * @param updatedUser - A SystemUser DTO.
+     */
     public void setUserData(SystemUserTO updatedUser) {
         mergeUserData(updatedUser);
     }
@@ -111,6 +113,12 @@ public class SystemUser implements Serializable {
         toTransactions = updateTransactions(updatedUser.toTransactions);
     }
     
+    /**
+     * Update all of this SystemUser entity's transactions through the DTOs.
+     * 
+     * @param transactionTOs
+     * @return 
+     */
     private List<PaymentTransaction> updateTransactions(List<PaymentTransactionTO> transactionTOs) {
         List<PaymentTransaction> updatedTransactions = new ArrayList<>();
         transactionTOs.forEach((t) -> {
@@ -120,6 +128,67 @@ public class SystemUser implements Serializable {
         });
         
         return updatedTransactions;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.id);
+        hash = 83 * hash + Objects.hashCode(this.username);
+        hash = 83 * hash + Objects.hashCode(this.userpassword);
+        hash = 83 * hash + Objects.hashCode(this.name);
+        hash = 83 * hash + Objects.hashCode(this.surname);
+        hash = 83 * hash + Objects.hashCode(this.currency);
+        hash = 83 * hash + Float.floatToIntBits(this.balance);
+        hash = 83 * hash + Objects.hashCode(this.usergroup);
+        hash = 83 * hash + Objects.hashCode(this.fromTransactions);
+        hash = 83 * hash + Objects.hashCode(this.toTransactions);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SystemUser other = (SystemUser) obj;
+        if (Float.floatToIntBits(this.balance) != Float.floatToIntBits(other.balance)) {
+            return false;
+        }
+        if (!Objects.equals(this.username, other.username)) {
+            return false;
+        }
+        if (!Objects.equals(this.userpassword, other.userpassword)) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.surname, other.surname)) {
+            return false;
+        }
+        if (!Objects.equals(this.currency, other.currency)) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.usergroup, other.usergroup)) {
+            return false;
+        }
+        if (!Objects.equals(this.fromTransactions, other.fromTransactions)) {
+            return false;
+        }
+        if (!Objects.equals(this.toTransactions, other.toTransactions)) {
+            return false;
+        }
+        return true;
     }
 
     public String getUserpassword() {
@@ -149,47 +218,6 @@ public class SystemUser implements Serializable {
     public void setBalanceAndCurrency(float balance, String currency) {
         this.balance = balance;
         this.currency = currency;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 89 * hash + Objects.hashCode(this.id);
-        hash = 89 * hash + Objects.hashCode(this.username);
-        hash = 89 * hash + Objects.hashCode(this.userpassword);
-        hash = 89 * hash + Objects.hashCode(this.name);
-        hash = 89 * hash + Objects.hashCode(this.surname);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final SystemUser other = (SystemUser) obj;
-        if (!Objects.equals(this.username, other.username)) {
-            return false;
-        }
-        if (!Objects.equals(this.userpassword, other.userpassword)) {
-            return false;
-        }
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.surname, other.surname)) {
-            return false;
-        }
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
     }
 
     public String getUsername() {
