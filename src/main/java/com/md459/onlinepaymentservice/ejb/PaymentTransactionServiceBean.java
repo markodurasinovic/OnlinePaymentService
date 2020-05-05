@@ -118,6 +118,14 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     
     /**
      * Create a new PENDING PaymentTransaction (request).
+     * The lump value is being sent in requester's currency. This means that 
+     * the amount is converted from requester's currency to requestee's currency
+     * and transferred in requester's currency. The transaction holds this information.
+     * 
+     * N.B: no conversion occurs until the request is accepted in acceptRequest()
+     * 
+     * e.g. requesting 100GBP from a USD account
+     * transaction would contain the pre-converted amount (e.g. 100GBP)
      * 
      * @param requester - Username of the user to be paid.
      * @param requestee - Username of the user to pay.
@@ -140,9 +148,8 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
             throw new EJBException("User does not exist.");
         }
         
-        float transferAmount = convert(payer.currency, payee.currency, amount);
         PaymentTransactionTO transaction = new PaymentTransactionTO(
-                payer, payee, transferAmount, description, payer.currency);
+                payer, payee, amount, description, payee.currency);
         try {
             transaction.creationTime = timestamp.getTimestamp();
         } catch(Exception e) {
@@ -179,6 +186,12 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
     
     /**
      * Create a new PaymentTransaction, transferring money from payer to payee.
+     * The lump value is being sent in payee's currency. This means that 
+     * the amount is converted from payer's currency to payee's currency
+     * and transferred in payee's currency. The transaction holds this information.
+     * 
+     * e.g. transferring 100 from a GBP account to a USD account
+     * transaction would contain the converted amount (e.g. 120USD)
      * 
      * @param payerUsername - Username of Payer.
      * @param payeeUsername - Username of Payee.
@@ -203,7 +216,7 @@ public class PaymentTransactionServiceBean implements PaymentTransactionService 
         
         float transferAmount = convert(payer.currency, payee.currency, amount);
         PaymentTransactionTO transaction = new PaymentTransactionTO(
-                payer, payee, transferAmount, description, payer.currency);
+                payer, payee, transferAmount, description, payee.currency);
 
         if(payer.balance >= transferAmount) {
 

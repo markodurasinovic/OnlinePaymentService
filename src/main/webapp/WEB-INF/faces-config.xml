@@ -38,7 +38,6 @@
             <from-action>#{registrationBean.registerUser()}</from-action>
             <from-outcome>registerUser</from-outcome>
             <to-view-id>/registerUser.xhtml</to-view-id>
-            <redirect/>
         </navigation-case>
     </navigation-rule>
     
@@ -73,7 +72,6 @@
             <from-action>#{paymentBean.makePayment()}</from-action>
             <from-outcome>fail</from-outcome>
             <to-view-id>/users/makePayment.xhtml</to-view-id>
-            <redirect/>
         </navigation-case>
     </navigation-rule>
     
@@ -91,7 +89,6 @@
             <from-action>#{paymentBean.requestPayment()}</from-action>
             <from-outcome>fail</from-outcome>
             <to-view-id>/users/requestPayment.xhtml</to-view-id>
-            <redirect/>
         </navigation-case>
     </navigation-rule>
     
@@ -150,7 +147,6 @@
             <from-action>#{registrationBean.registerAdmin()}</from-action>
             <from-outcome>registerAdmin</from-outcome>
             <to-view-id>/admins/registerAdmin.xhtml</to-view-id>
-            <redirect/>
         </navigation-case>
     </navigation-rule>
 </faces-config>

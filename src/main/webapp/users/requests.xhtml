@@ -19,7 +19,9 @@
             
             <h:column>
                 <f:facet name="header">Amount</f:facet>
-                #{req.amount}
+                #{req.currency}<h:outputText value="#{req.amount}">
+                    <f:convertNumber minFractionDigits="2" maxFractionDigits="2"/>
+                </h:outputText>
             </h:column>
             
             <h:column>

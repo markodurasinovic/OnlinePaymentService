@@ -69,9 +69,9 @@ public class UserServiceBean implements UserService {
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void registerUser(String username, String password, String name, String surname, String currency) {
-         if(hasUser(username))
-             throw new EJBException("User with this username already exists.");
-         
+        if(hasUser(username))
+            throw new EJBException("User with this username already exists.");
+        
         float initialBalance = getInitialBalance(currency);
         SystemUserTO user = new SystemUserTO(
                 username, getDigest(password), name, surname, initialBalance, currency);
@@ -79,8 +79,14 @@ public class UserServiceBean implements UserService {
         userDAO.insert(user, "USER");
     }
     
-    private float getInitialBalance(String currency) {
-        return conversion.getConvertedAmount("GBP", currency, 1000.00f);
+    private float getInitialBalance(String currency) throws EJBException {
+        float balance;
+        try {
+            balance = conversion.getConvertedAmount("GBP", currency, 1000.00f);
+        } catch(EJBException e) {
+            throw new EJBException("Conversion service failed.");
+        }
+        return balance;
     }
     
     /**
@@ -90,6 +96,10 @@ public class UserServiceBean implements UserService {
      * @param password 
      */
     @Override
+//    Limiting this function to only ADMIN users doesn't allow the 
+//    startup EJB to register an admin with usrname: admin1; password: admin1
+//    on startup.
+//    
 //    @RolesAllowed("ADMIN")
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void registerAdmin(String username, String password) {

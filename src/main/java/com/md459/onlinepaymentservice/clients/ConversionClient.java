@@ -1,9 +1,12 @@
 package com.md459.onlinepaymentservice.clients;
 
+import javax.ejb.EJBException;
 import javax.ejb.Singleton;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
 * ConversionClient sends requests to the Conversion service's API.
@@ -28,13 +31,18 @@ public class ConversionClient {
      * @return Converted amount.
      */
     public float getConvertedAmount(String currency1, String currency2, float amount) {
-        float convertedAmount = client.target(baseUri)
-                    .path(currency1)
-                    .path(currency2)
-                    .path(String.valueOf(amount))
-                    .request(MediaType.APPLICATION_JSON)
-                    .get(Float.class);
-
-        return convertedAmount;        
+        Invocation.Builder builder = client.target(baseUri)
+                .path(currency1)
+                .path(currency2)
+                .path(String.valueOf(amount))
+                .request(MediaType.APPLICATION_JSON);
+        
+        Response res = builder.get();
+        int status = res.getStatus();
+        if(status == 200) {
+            return res.readEntity(float.class);
+        } else {
+            throw new EJBException(res.readEntity(String.class));
+        }
     }
 }
