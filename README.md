@@ -1,4 +1,4 @@
-# NB: This project was developed as a part of a coursework assessment for the University of Sussex final year module, Web Applications and Services. This implementation was awarded a 100% grade. I have made this implementation publically available on 31/01/2020 as a learning resource.
+# NB: This project was developed as a part of a coursework assessment for the University of Sussex final year module, Web Applications and Services (2020). This implementation was awarded a 100% grade. I have made this implementation publically available on 31/01/2020 as a learning resource.
 
 # An Online Payment Service
 ## 1. Introduction
